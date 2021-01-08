@@ -9,9 +9,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-df = pd.read_excel('software_dev.xlsx', sheet_name='software_dev', 
-                    names=['Job_position', 'Company', 'Location', 'Salary', 'posting_time', 'requirements', 'link'],
-                    na_values=['#NAME?'], engine='openpyxl' )
+# data collected was saved to two excel sheets
+df1 = pd.read_excel('final_data.xlsx', sheet_name='final_data', names=['Job_position', 'Company', 'Location', 'Salary', 'posting_time', 'requirements', 'rating', 'experience', 'link'], na_values=['#NAME?'], engine='openpyxl' )
+
+df2 = pd.read_excel('software_dev.xlsx', sheet_name='new_jobs', names=['Job_position', 'Company', 'Location', 'Salary', 'posting_time', 'requirements', 'rating', 'experience', 'link'], na_values=['#NAME?'], engine='openpyxl' )
+
+df = pd.concat([df1, df2])
 
 # link & posting time for the jobs columns are not important for our analysis so we will drop them
 df.drop('link', axis=1, inplace=True) 
@@ -46,6 +49,13 @@ df['Job_position'] = df['Job_position'].apply(lambda x: str(x).replace('\nnew','
 df.drop_duplicates(inplace=True)
 df.index = np.arange(0,len(df))
 
+# removing new line character from ratings
+df['rating'] = df.rating.apply(lambda x: x.replace('\n',''))
+
+# filling missing values with a value far away from our distribution
+df['rating'].where(df['rating'] != 'na', -99, inplace=True)
+df['rating'] = df['rating'].astype('float64')
+
 # Rows with missing salaries contain valuable information regarding job position, location and their requirements
 # So we will keep them for now 
 # for now lets fill them with -999
@@ -55,5 +65,5 @@ df['Salary'].fillna('-999', inplace=True)
 df['Salary'] = df['Salary'].apply(lambda x: str(x).replace('\n',''))
 df['Salary'] = df['Salary'].apply(lambda x: str(x).replace('₹',''))
 
-df.to_csv('./temp.csv', index = False)
+df.to_csv('./data_cleaned.csv', index = False)
 print('\n\n File Saved !!')

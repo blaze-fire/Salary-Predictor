@@ -22,7 +22,7 @@ def find_jobs_from():
            individually and then concatenate all the results. 
     """
     
-    for i in range(1,50001,20):                                                                 # to get results from other pages 
+    for i in range(40,50001,20):                                                                 # to get results from other pages 
         
         job_soup = load_indeed_jobs_div(i)
         jobs_list, num_listings = extract_job_information_indeed(job_soup)
@@ -37,14 +37,14 @@ def find_jobs_from():
 
 def save_jobs_to_excel(jobs_list):
     jobs = pd.DataFrame(jobs_list)
-    jobs.to_csv('C:/Users/krish/Desktop/Job_ML_project/fresher.csv', mode = 'a', index = False, header = None, encoding='utf-8-sig')
+    jobs.to_csv('C:/Users/krish/Music/Job_ML_project/new_jobs.csv', mode = 'a', index = False, header = None, encoding='utf-8-sig')
 
 
 
 ## ================== FUNCTIONS FOR INDEED.CO.IN =================== ##
 
 def load_indeed_jobs_div(i):
-    url = ('https://in.indeed.com/jobs?q=fresher&' + str(i))
+    url = ('https://in.indeed.com/jobs?q=software+developer&fromage=last&start=' + str(i))
 
     page = requests.get(url)
     soup = BeautifulSoup(page.content, "html.parser")
@@ -96,6 +96,18 @@ def extract_job_information_indeed(job_soup):
         qualifications.append(extract_qualifications(job_elem))
     extracted_info.append(qualifications)
 
+    ratings = []
+    cols.append('ratings')
+    for job_elem in job_elems:
+        ratings.append(extract_rating(job_elem))
+    extracted_info.append(ratings)
+
+    requirements = []
+    cols.append('requirements')
+    for job_elem in job_elems:
+        requirements.append(extract_requirements(job_elem))
+    extracted_info.append(requirements)
+
     links = []
     cols.append('links')
     for job_elem in job_elems:
@@ -138,8 +150,23 @@ def extract_location(job_elem):
         locate = BeautifulSoup.get_text(locate)
         return locate
     else:
-        return
+        return 'na'
 
+def extract_rating(job_elem):
+    rating = job_elem.find('span', class_='ratingsContent')
+    if(rating):
+        rating = BeautifulSoup.get_text(rating)
+        return rating
+    else:
+        return 'na'
+
+def extract_requirements(job_elem):
+    requirements = job_elem.find(class_='jobCardReqList')
+    if(requirements):
+        requirements = BeautifulSoup.get_text(requirements)
+        return requirements
+    else:
+        return 'na'
 
 def extract_qualifications(job_elem):
     qual_elem = job_elem.find(class_='summary')
@@ -148,7 +175,7 @@ def extract_qualifications(job_elem):
         qualifications = qualifications.replace('\n','')
         return qualifications
     else:
-        return
+        return 'na'
 
 def extract_salary(job_elem):
     salary_elm =  job_elem.find('span', class_='salaryText')
@@ -156,7 +183,7 @@ def extract_salary(job_elem):
         salary = BeautifulSoup.get_text(salary_elm)                     # To deal with text present b/w html tags 
         return salary
     else:
-        return
+        return 'na'
 
 ## ================== TO AUTOMATE THE PROCESS  =================== ##
 
