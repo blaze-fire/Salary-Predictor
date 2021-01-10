@@ -10,9 +10,9 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # data collected was saved to two excel sheets
-df1 = pd.read_excel(r'C:\Users\krish\Music\Job_ML_project\final_data.xlsx', sheet_name='final_data', names=['Job_position', 'Company', 'Location', 'Salary', 'posting_time', 'requirements', 'rating', 'experience', 'link'], na_values=['#NAME?'], engine='openpyxl' )
+df1 = pd.read_excel(r'C:\Users\krish\Music\Job_ML_project\final_data.xlsx', sheet_name='final_data', names=['Job_position', 'Company', 'Location', 'income', 'posting_time', 'requirements', 'rating', 'experience', 'link'], na_values=['#NAME?'], engine='openpyxl' )
 
-df2 = pd.read_excel(r'C:\Users\krish\Music\Job_ML_project\software_dev.xlsx', sheet_name='new_jobs', names=['Job_position', 'Company', 'Location', 'Salary', 'posting_time', 'requirements', 'rating', 'experience', 'link'], na_values=['#NAME?'], engine='openpyxl' )
+df2 = pd.read_excel(r'C:\Users\krish\Music\Job_ML_project\software_dev.xlsx', sheet_name='new_jobs', names=['Job_position', 'Company', 'Location', 'income', 'posting_time', 'requirements', 'rating', 'experience', 'link'], na_values=['#NAME?'], engine='openpyxl' )
 
 df = pd.concat([df1, df2])
 
