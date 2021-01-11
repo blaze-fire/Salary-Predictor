@@ -53,7 +53,7 @@ df.index = np.arange(0,len(df))
 df['rating'] = df.rating.apply(lambda x: x.replace('\n',''))
 
 # filling missing values with a value far away from our distribution
-df['rating'].where(df['rating'] != 'na', -99, inplace=True)
+df['rating'].where(df['rating'] != 'na', 0, inplace=True)
 df['rating'] = df['rating'].astype('float64')
 
 # Rows with missing salaries contain valuable information regarding job position, location and their requirements
