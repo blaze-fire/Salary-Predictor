@@ -10,17 +10,15 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # data collected was saved to two excel sheets
-df1 = pd.read_excel(r'C:\Users\krish\Music\Job_ML_project\data_1.xlsx', sheet_name='final_data', names=['Job_position', 'Company', 'Location', 'income', 'posting_time', 'requirements', 'rating', 'experience', 'link'], na_values=['#NAME?'], engine='openpyxl' )
+df = pd.read_excel(r'C:\Users\krish\Music\Job_ML_project\raw_data.xlsx', sheet_name='Sheet1', names=['Job_position', 'Company', 'Location', 'Salary', 'posting_time', 'requirements', 'rating', 'experience', 'link'], na_values=['#NAME?'], engine='openpyxl' )
 
-df2 = pd.read_excel(r'C:\Users\krish\Music\Job_ML_project\data_2.xlsx', sheet_name='new_jobs', names=['Job_position', 'Company', 'Location', 'income', 'posting_time', 'requirements', 'rating', 'experience', 'link'], na_values=['#NAME?'], engine='openpyxl' )
-
-df = pd.concat([df1, df2])
 
 # link & posting time for the jobs columns are not important for our analysis so we will drop them
 df.drop('link', axis=1, inplace=True) 
 df.drop('posting_time', axis=1, inplace=True) 
 
-# Out of 22782 entries 22139 are duplicates, there were lot of duplicate values 
+
+# Out of 16481 entries 15355 are duplicates, there were lot of duplicate values 
 #looks like the company posted for the same profile many times after a gap of few days   
 print('Length of Duplicated rows', len(df[df.duplicated()]))
 
@@ -49,12 +47,19 @@ df['Job_position'] = df['Job_position'].apply(lambda x: str(x).replace('\nnew','
 df.drop_duplicates(inplace=True)
 df.index = np.arange(0,len(df))
 
+
+sns.heatmap(df.isnull(), cmap='viridis', cbar=False, yticklabels=False)
+
+
 # removing new line character from ratings
 df['rating'] = df.rating.apply(lambda x: x.replace('\n',''))
 
 # filling missing values with a value far away from our distribution
 df['rating'].where(df['rating'] != 'na', 0, inplace=True)
 df['rating'] = df['rating'].astype('float64')
+
+
+df['Salary'].isnull().sum()
 
 # Rows with missing salaries contain valuable information regarding job position, location and their requirements
 # So we will keep them for now 
