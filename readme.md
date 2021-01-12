@@ -1,8 +1,8 @@
-﻿# Salary-Predictor
+# Salary-Predictor
 
 " 10.8 million and counting: Take a look at how many jobs Covid-19 has wiped out. "
 
-Read more at: https://www.moneycontrol.com/news/business/economy/10-8-million-and-counting-take-a-look-at-how-many-jobs-covid-19-has-wiped-out-5704851.html
+[Read more here]( https://www.moneycontrol.com/news/business/economy/10-8-million-and-counting-take-a-look-at-how-many-jobs-covid-19-has-wiped-out-5704851.html)
 
 Covid-19 has impacted our lives greatly but more so has impacted source of income of many, as if things were already not difficult.
 As an engineering student currently in my 2nd year, i would be sitting for my internships soon,  it would be great to have an idea what skills are trending in tech industry, to boost my chances of getting good internships and eventually a good job, in this project, I predict salaries based on the skills, company names, requirements and rating of the company posted in indeed ([best job searching site](https://www.thebalancecareers.com/top-best-job-websites-2064080)), for which i scraped the site using [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/) library. 
@@ -10,7 +10,7 @@ As an engineering student currently in my 2nd year, i would be sitting for my in
 ## Table of contents
 * [Data Scraping](https://github.com/blaze-fire/Salary-Predictor/blob/main/scraping%20and%20cleaning%20data/indeed_jobs_scraper.py)
 * [Data Cleaning](https://github.com/blaze-fire/Salary-Predictor/blob/main/scraping%20and%20cleaning%20data/data_cleaning.py)
-* [Technologies](#technologies)
+* [Observations](#observations)
 * [Model Building](#model-building)
 * [Results](#results)
 	
@@ -19,6 +19,11 @@ Project is created with:
 * Jupyter notebook version: 6.1.3
 * Spyder version:  4.2.1
 * Python version: 3.8
+
+## Observations
+First, there are a lot of missing values, especially of the target variable<br>
+![](Images/missing_values.png)<br>
+
 
 ## Model Building
 
@@ -34,17 +39,28 @@ Also created a blender of best models, to squeeze a bit more performance from th
 
 ## Results
 
-|Sno.| Model      				    |	Mean Squared Error 	|
-| ----|   :-----------: 				| 		----------- 				|
-|	1	| Lasso       		    		|   719235.0548   			|
-|	2	| DecisionTree 			| 	390581.141        		|
-|	2	| SVR 							| 	648245.439        		|
-|	3	| RandomForest			|   355811.3915   	 		|
-|	4	| XGBRegressor  		| 	416166.7595        	|
+As the dataset was quite samall, RandomForest was used to generate the feature importances of variables to get an idea of how useful are our variables in predicting target values
+
+Following is the plot for top 10 useful features according to RandomForest
+![](Images/feature_imp.png)<br>
+
+The features are quite weakly related to the target values.
+
+Lets now look at the performance of various models (Complexity increases down the list)
+
+
+
+|Sno.		| Model      				|	Mean Squared Error 		|
+| ----		|   :-----------: 			| 		----------- 		|
+|	1	| Lasso       		    		|   	719235.0548   			|
+|	2	| DecisionTree 				| 	390581.141        		|
+|	2	| SVR 					| 	648245.439        		|
+|	3	| RandomForest				|   	355811.392   	 		|
+|	4	| XGBRegressor  			| 	416166.759        		|
 |	5	| ExtraTrees   				| 	438762.352        		|
-|	6	| GradientBoosting  	|	498879.956        		|
-|	7	| VotingRegressor   	|   402993.457   			|
-|	8	| Stacking Ensemble 	|   363761.364   			|
+|	6	| GradientBoosting  			|	498879.956        		|
+|	7	| VotingRegressor   			|   	402993.457   			|
+|	8	| Stacking Ensemble 			|   	363761.364   			|
 
 
 **Note:**	*The MSE of all models are on test set.* 
