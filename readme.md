@@ -24,13 +24,16 @@ Project is created with:
 First, there are a lot of missing values, especially of the target variable<br>
 ![](Images/missing_values.png)<br>
 
+Lets look at salary distribution<br>
+![](Images/job_dist.png)<br>
+
 Lets Look at the correlation b/w some of these these variables<br>
 ![](Images/corr_heatmap.png)<br>
 
 Some correlations are quite noticable while others are quite weakly related to average salary 
 
 Lets look at average salary vs ratings
-![](Images/rating_vs_sal.png)<br>
+
 
 
 
