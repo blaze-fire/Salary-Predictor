@@ -21,6 +21,9 @@ Project is created with:
 * Python version: 3.8
 
 ## Observations
+**[Jupyter Notebook](https://github.com/blaze-fire/Salary-Predictor/blob/main/EDA.ipynb)**
+
+
 First, there are a lot of missing values, especially of the target variable<br><br>
 ![](Images/missing_values.png)<br><br>
 
@@ -52,6 +55,13 @@ Lets now look at most mentioned skills in the requirements section by recruiting
 From the wordcloud we can see some of the trending skills in software industry<br>
 Looks like most jobs are for front end, most popular framework is .net and the most asked for programming language is python, php and java<br>
 
+
+Now lets look at average salary wrt to job role<br><br>
+![](Images/top_paying_skill.png)<br><br>
+(i)   Most salaries are below Rs.50000 <br>
+(ii)  The highest offered salary is of Rs.5285450 by Jobsrefer<br> 
+(iii) A Company even pays an annual salary of just Rs. 6500 !!<br><br>
+
 Lets look at states having the highest job openings at the time of data collected<br><br>
 ![](Images/openings_in_states.png)<br><br>
 Most job openings are in Karnataka, followed by Delhi<br><br>
@@ -60,12 +70,7 @@ Most job openings are in Karnataka, followed by Delhi<br><br>
 Lets now look at top 10 companies offering highest salaries wrt seniority<br><br>
 ![](Images/top_comp_vs_seniority.png)<br><br>
 As expected Companies offer high paying salries to senior employees<br>
-Looks like most of the missing job_titles for above companies are probably senior<br>
-Suprisingly most of popular companies like Accenture, JP Morgan, Siemens etc. are nowhere near the top<br><br>
-
-
-
-
+Looks like most of the missing job_titles for above companies are probably senior<br><br>
 
 
 
@@ -114,12 +119,3 @@ The model can give much better predictions if fed with more data.
 
 
 
-
-
-To run this project, install it locally using npm:
-
-```
-$ cd ../lorem
-$ npm install
-$ npm start
-```
