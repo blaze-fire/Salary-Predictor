@@ -20,8 +20,8 @@ num_df['avg_yearly_sal'] = num_df['avg_yearly_sal'].apply(lambda x: np.log(x) if
 sns.displot(num_df['avg_yearly_sal'], kde=True)
 # Now our annual salary distribution is quite uniform
 
-# Lets do the train test split<br>
-# <b> Note </b> : Here we are using train test split as dataset is quite small but if you have a much bigger dataset you might want to consider using stratified shuffle split.<br>
+# Lets do the train test split
+#  Note  : Here we are using train test split as dataset is quite small but if you have a much bigger dataset you might want to consider using stratified shuffle split.
 # In our case train test split gave better results compared to stratified shuffling
 
 
@@ -70,11 +70,14 @@ from sklearn.metrics import mean_squared_error
 # Lets tune our random forest for better performance
 
 
-param_grid = {'n_estimators' : [100,300, 500]}
+param_grid = {'n_estimators' : [100, 300, 500]}
 grid = GridSearchCV(RandomForestRegressor(), param_grid=param_grid)
 grid.fit(X_train, y_train)
 rnd_best = grid.best_estimator_
+pred = rnd_best.predict(X_test)
 
+
+np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
 
 
 #filename = 'rnd_best.sav'
@@ -84,6 +87,22 @@ rnd_best = grid.best_estimator_
 # Now we will train and fine tune many models namely Lasso regression, Decision tree, Random Forest, Extra trees, Gradient Boosted trees, Xgboost and then using Voting regressor on best performing models
 
 
+from sklearn.svm import SVR
+svr = SVR()
+param_grid = {'gamma': ['scale','auto'], 'C': [0.5, 1, 1.5]}
+grid = GridSearchCV(svr, param_grid=param_grid)
+grid.fit(X_train, y_train)
+svr_best = grid.best_estimator_
+pred = svr_best.predict(X_test)
+
+grid.best_params_
+
+np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
+
+
+
+
+
 from sklearn.linear_model import Lasso
 lasso = Lasso(random_state=42)
 param_grid = {'alpha': np.arange(1,101)/100, 'max_iter': [1000, 3000, 6000, 10000]} 
@@ -91,7 +110,6 @@ grid = GridSearchCV(lasso, param_grid=param_grid)
 grid.fit(X_train, y_train)
 lasso_best = grid.best_estimator_
 pred = lasso_best.predict(X_test)
-
 
 
 np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
@@ -194,11 +212,12 @@ np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
 #pickle.dump(vot_reg, open(filename, 'wb'))
 
 
-# We can see that we have used some really powerful models like <b>Random forest</b>, <b>ExtraTrees</b>, <b>Gradient boosted trees</b> and <b>Xgboost</b> models as the complexity of problem is high but the available data is small. (784 training and 100 test examples) <br>
+# We can see that we have used some really powerful models like Random forest, ExtraTrees, Gradient boosted trees and Xgboost models as the complexity of problem is high but the available data is small. (784 training and 100 test examples) 
 # Lets go one step further and create a blender of best models so far, to squeeze a bit more performance from our models
 
-
+# models to use in our blender
 estimators = [rnd_best, xgr_best, vot_reg, dtree, extra_reg, grb_reg]
+
 
 X_train_predictions = np.empty((len(X_train), len(estimators)), dtype = np.float32)
 
@@ -228,7 +247,7 @@ from sklearn.metrics import r2_score
 r2_score(y_test, pred)
 
 
-# Our model explains half of the observed variation, which is acceptable if not great.   <br>
+# Our model explains half of the observed variation, which is acceptable if not great.   
 # We can also conclude that the model can give much better predictions if fed with more data.
 
 
