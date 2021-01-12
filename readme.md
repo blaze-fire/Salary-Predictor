@@ -21,18 +21,49 @@ Project is created with:
 * Python version: 3.8
 
 ## Observations
-First, there are a lot of missing values, especially of the target variable<br>
-![](Images/missing_values.png)<br>
+First, there are a lot of missing values, especially of the target variable<br><br>
+![](Images/missing_values.png)<br><br>
 
-Lets look at salary distribution<br>
-![](Images/job_dist.png)<br>
+Lets look at salary distribution<br><br>
+![](Images/job_dist.png)<br><br>
 
-Lets Look at the correlation b/w some of these these variables<br>
-![](Images/corr_heatmap.png)<br>
+Lets look at income categories where salaries fall in<br><br>
+![](Images/income_cat.png)<br><br>
+Most annual incomes are in the range of 1 to 5 lpa<br>
+
+As observed from the income category distribution and the avg_annual_sal distribution the salary distribution is really skewed, as most of the people are payed near the average which is pretty low and only a few people get really high salaries<br>
+
+Lets Look at the correlation b/w some of these these variables<br><br>
+![](Images/corr_heatmap.png)<br><br>
 
 Some correlations are quite noticable while others are quite weakly related to average salary 
 
-Lets look at average salary vs ratings
+Lets look at average salary vs ratings<br><br>
+![](Images/rating_vs_sal.png)<br><br>
+Higher rated companies generally pay higher with few exceptions (Most of the higher rated companies have not stated the offering salary beforehand, that could be one reason<br>
+
+Lets look at average salary vs ratings<br><br>
+![](Images/net_exp_vs_salary.png)<br>
+Comapanies tend to pay higher to more experienced employees<br>
+
+We have talked about how various factors relate to annual salary<br>
+Lets now look at most mentioned skills in the requirements section by recruiting companies<br><br>
+![](Images/wordcloud.png)<br><br>
+From the wordcloud we can see some of the trending skills in software industry<br>
+Looks like most jobs are for front end, most popular framework is .net and the most asked for programming language is python, php and java<br>
+
+Lets look at states having the highest job openings at the time of data collected<br><br>
+![](Images/openings_in_states.png)<br><br>
+Most job openings are in Karnataka, followed by Delhi<br><br>
+
+
+Lets now look at top 10 companies offering highest salaries wrt seniority<br><br>
+![](Images/top_comp_vs_seniority.png)<br><br>
+As expected Companies offer high paying salries to senior employees<br>
+Looks like most of the missing job_titles for above companies are probably senior<br>
+Suprisingly most of popular companies like Accenture, JP Morgan, Siemens etc. are nowhere near the top<br><br>
+
+
 
 
 
@@ -69,9 +100,9 @@ Lets now look at the performance of various models (Complexity increases down th
 |	2	| DecisionTree 				| 	390581.141        		|
 |	2	| SVR 					| 	648245.439        		|
 |	3	| RandomForest				|   	355811.392   	 		|
-|	4	| XGBRegressor  			| 	416166.759        		|
+|	4	| GradientBoosting 			| 	498879.956     			|
 |	5	| ExtraTrees   				| 	438762.352        		|
-|	6	| GradientBoosting  			|	498879.956        		|
+|	6	| XGBRegressor				|	416166.759     			|
 |	7	| VotingRegressor   			|   	402993.457   			|
 |	8	| Stacking Ensemble 			|   	363761.364   			|
 
