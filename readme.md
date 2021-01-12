@@ -4,7 +4,7 @@
 
 [Read more here]( https://www.moneycontrol.com/news/business/economy/10-8-million-and-counting-take-a-look-at-how-many-jobs-covid-19-has-wiped-out-5704851.html)
 
-Covid-19 has impacted our lives greatly but more so has impacted source of income of many, as if things were already not difficult.
+The above article is one of many. Covid-19 has impacted our lives greatly but more so has impacted source of income of many, as if things were already not difficult.
 As an engineering student currently in my 2nd year, i would be sitting for my internships soon,  it would be great to have an idea what skills are trending in tech industry, to boost my chances of getting good internships and eventually a good job, in this project, I predict salaries based on the skills, company names, requirements and rating of the company posted in indeed ([best job searching site](https://www.thebalancecareers.com/top-best-job-websites-2064080)), for which i scraped the site using [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/) library. 
 
 ## Table of contents
@@ -23,6 +23,16 @@ Project is created with:
 ## Observations
 First, there are a lot of missing values, especially of the target variable<br>
 ![](Images/missing_values.png)<br>
+
+Lets Look at the correlation b/w some of these these variables<br>
+![](Images/corr_heatmap.png)<br>
+
+Some correlations are quite noticable while others are quite weakly related to average salary 
+
+Lets look at average salary vs ratings
+![](Images/rating_vs_sal.png)<br>
+
+
 
 
 ## Model Building
