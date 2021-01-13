@@ -44,7 +44,7 @@ Some correlations are quite noticable while others are quite weakly related to a
 
 Lets look at average salary vs ratings<br><br>
 ![](Images/rating_vs_sal.png)<br><br>
-Higher rated companies generally pay higher with few exceptions (Most of the higher rated companies have not stated the offering salary beforehand, that could be one reason<br>
+Higher rated companies generally pay higher with few exceptions (Most of the higher rated companies have not stated the offering salary beforehand, that could be one reason)<br>
 
 Lets look at average salary vs ratings<br><br>
 ![](Images/net_exp_vs_salary.png)<br>
