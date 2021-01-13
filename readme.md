@@ -115,6 +115,8 @@ Lets now look at the performance of various models (Complexity increases down th
 
 **Note:**	*The MSE of all models are on test set.* 
 
+The 95% confidence interval for our predictions : [287307.967, 498392.967]
+
 The **R2** score from Stacking Ensemble model predictions is **0.5201**, the model explains half of the observed variation, which is acceptable if not great. (only 784 training and 100 test examples) 
 The model can give much better predictions if fed with more data.
 
