@@ -50,7 +50,7 @@ Lets look at average salary vs ratings<br><br>
 ![](Images/net_exp_vs_salary.png)<br>
 Comapanies tend to pay higher to more experienced employees<br>
 
-We have talked about how various factors relate to annual salary<br>
+We have talked about how various factors relate to annual salary<br><br>
 Lets now look at most mentioned skills in the requirements section by recruiting companies<br><br>
 ![](Images/wordcloud.png)<br><br>
 From the wordcloud we can see some of the trending skills in software industry<br>
