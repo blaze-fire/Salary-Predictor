@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Salary-Predictor
 
 " 10.8 million and counting: Take a look at how many jobs Covid-19 has wiped out. "
@@ -250,4 +249,3 @@ Also, here our tuned **RandomForest** performs slightly better than our ensemble
 
 The 95% confidence interval : [113283.578, 288145.465] <br><br>
 **R2** score : 0.75
->>>>>>> 5d6f64162c4a93ee1c7b230521508a7a0fc0282f
