@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # This file may be used to create an environment using:
 # $ conda create --name <env> --file <this file>
 # platform: linux-64
@@ -67,4 +66,3 @@ scipy @ file:///tmp/build/80754af9/scipy_1612469589093/work
 six @ file:///tmp/build/80754af9/six_1605205327372/work
 threadpoolctl @ file:///tmp/tmp9twdgx9k/threadpoolctl-2.1.0-py3-none-any.whl
 Werkzeug @ file:///home/ktietz/src/ci/werkzeug_1611932622770/work
->>>>>>> main
