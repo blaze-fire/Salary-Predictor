@@ -88,6 +88,9 @@ Also created a blender of best models, to squeeze a bit more performance from th
 *For stacking RandomForest, XGBRegressor, ExtraTrees, GradientBoosting, VotingRegressor were used as they performed the best*
 
 ## Results
+
+To run the notebook download trained models from [here](https://drive.google.com/file/d/1NM-ojgIzD58RckXjJe0VbDSvDSKDQkGM/view?usp=sharing) and unzip them in a new folder named all_trained_models.
+
 To view results : **[Jupyter Notebook](https://github.com/blaze-fire/Salary-Predictor/blob/main/model.ipynb)** <br><br>
 As the dataset was quite samall, RandomForest was used to generate the feature importances of variables to get an idea of how useful our variables are in predicting target values
 
