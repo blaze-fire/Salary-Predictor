@@ -121,7 +121,7 @@ For **Stacking Ensemble** :<br>
 
 The 95% confidence interval for our predictions : [130003.6634 , 302895.4814]
 
-The **R2** score from Stacking Ensemble model predictions is **0.7342**, the model explains about 3/4 th of the observed variation, which is great, which is acceptable if not great. The model can give much better predictions if fed with more data.
+The **R2** score from Stacking Ensemble model predictions is **0.7342**, the model explains about 3/4 th of the observed variation, which is great. The model can give much better predictions if fed with more data.
 
 Also, here our tuned **RandomForest** performs slightly better than our ensemble:
 
