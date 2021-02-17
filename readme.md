@@ -120,24 +120,5 @@ The **R2** score from Stacking Ensemble model predictions is **0.7342**, the mod
 
 Also, here our tuned **RandomForest** performs slightly better than our ensemble:
 
-The 95% confidence interval for our predictions : [113283.578, 288145.465] <br><br>
+The 95% confidence interval : [113283.578, 288145.465] <br><br>
 **R2** score : 0.75
-
-
-<br><br><br>
-|Sno.		| Model      				|	Mean Squared Error 		|
-| ----		|   :-----------: 			| 		----------- 		|
-|	1	| Lasso       		    		|   	719235.0548   			|
-|	2	| DecisionTree 				| 	390581.141        		|
-|	2	| SVR 					| 	648245.439        		|
-|	3	| RandomForest				|   	355811.392   	 		|
-|	4	| GradientBoosting 			| 	498879.956     			|
-|	5	| ExtraTrees   				| 	438762.352        		|
-|	6	| XGBRegressor				|	416166.759     			|
-|	7	| VotingRegressor   			|   	402993.457   			|
-|	8	| Stacking Ensemble 			|   	363761.364   			|
-
-
-
-
-
