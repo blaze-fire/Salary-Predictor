@@ -8,7 +8,6 @@ import pickle
 
 df = pd.read_csv('./data/data_for_modelling.csv')
 
-
 num_df = df.select_dtypes(exclude = 'object')
 
 
@@ -47,7 +46,6 @@ rnd_reg.fit(X_train , y_train)
 
 
 col_names = num_df.drop('avg_yearly_sal', axis=1).columns
-
 
 
 # plot to see top 10 important features by random forest
