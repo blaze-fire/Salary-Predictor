@@ -10,8 +10,12 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # data collected was saved to two excel sheets
-df = pd.read_excel(r'C:\Users\krish\Music\Job_ML_project\raw_data.xlsx', sheet_name='Sheet1', names=['Job_position', 'Company', 'Location', 'Salary', 'posting_time', 'requirements', 'rating', 'experience', 'link'], na_values=['#NAME?'], engine='openpyxl' )
+df1 = pd.read_excel(r'C:\Users\krish\Music\Job_ML_project\data\raw_data.xlsx', sheet_name='Sheet1', names=['Job_position', 'Company', 'Location', 'Salary', 'posting_time', 'requirements', 'rating', 'experience', 'link'], na_values=['#NAME?'], engine='openpyxl' )
+df2 = pd.read_excel(r'C:\Users\krish\Music\Job_ML_project\data\raw_data.xlsx', sheet_name='Sheet2', names=['Job_position', 'Company', 'Location', 'Salary', 'posting_time', 'requirements', 'rating', 'experience', 'link'], na_values=['#NAME?'], engine='openpyxl' )
 
+df = pd.concat([df1, df2])
+
+df.index = np.arange(0, len(df))
 
 # link & posting time for the jobs columns are not important for our analysis so we will drop them
 df.drop('link', axis=1, inplace=True) 
@@ -50,9 +54,10 @@ df.index = np.arange(0,len(df))
 
 sns.heatmap(df.isnull(), cmap='viridis', cbar=False, yticklabels=False)
 
+df['rating'] = df['rating'].fillna('na')
 
 # removing new line character from ratings
-df['rating'] = df.rating.apply(lambda x: x.replace('\n',''))
+df['rating'] = df.rating.apply(lambda x: str(x).replace('\n',''))
 
 # filling missing values with a value far away from our distribution
 df['rating'].where(df['rating'] != 'na', 0, inplace=True)
@@ -69,6 +74,7 @@ df['Salary'].fillna('-999', inplace=True)
 # remove new line and ruppes symbol  
 df['Salary'] = df['Salary'].apply(lambda x: str(x).replace('\n',''))
 df['Salary'] = df['Salary'].apply(lambda x: str(x).replace('₹',''))
+
 
 df.to_csv('./data_cleaned.csv', index = False)
 print('\n\n File Saved !!')
