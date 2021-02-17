@@ -112,7 +112,9 @@ Lets now look at the performance of various models (Complexity increases down th
 |	8	| Stacking Ensemble 			|   	241739.189   			|
 
 
-**Note:**	*The MSE of all models are on test set.* 
+**Note:**	*The MSE of all models are on test set.*  <br>
+
+For **Stacking Ensemble** :<br>
 
 The 95% confidence interval for our predictions : [130003.6634 , 302895.4814]
 
