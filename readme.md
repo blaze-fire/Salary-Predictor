@@ -99,7 +99,32 @@ The features are quite weakly related to the target values.
 Lets now look at the performance of various models (Complexity increases down the list)
 
 
+|Sno.		| Model      				|	Mean Squared Error 		|
+| ----		|   :-----------: 			| 		----------- 		|
+|	1	| Lasso       		    		|   	667868.128   			|
+|	2	| DecisionTree 				| 	284506.715        		|
+|	2	| SVR 					| 	683731.055        		|
+|	3	| RandomForest				|   	218930.329   	 		|
+|	4	| GradientBoosting 			| 	469119.429     			|
+|	5	| ExtraTrees   				| 	318502.193        		|
+|	6	| XGBRegressor				|	247804.983     			|
+|	7	| VotingRegressor   			|   	290880.830   			|
+|	8	| Stacking Ensemble 			|   	241739.189   			|
 
+
+**Note:**	*The MSE of all models are on test set.* 
+
+The 95% confidence interval for our predictions : [130003.6634 , 302895.4814]
+
+The **R2** score from Stacking Ensemble model predictions is **0.7342**, the model explains about 3/4 th of the observed variation, which is great, which is acceptable if not great. The model can give much better predictions if fed with more data.
+
+Also, here our tuned **RandomForest** performs slightly better than our ensemble:
+
+The 95% confidence interval for our predictions : [113283.578, 288145.465] <br><br>
+**R2** score : 0.75
+
+
+<br><br><br>
 |Sno.		| Model      				|	Mean Squared Error 		|
 | ----		|   :-----------: 			| 		----------- 		|
 |	1	| Lasso       		    		|   	719235.0548   			|
@@ -113,12 +138,6 @@ Lets now look at the performance of various models (Complexity increases down th
 |	8	| Stacking Ensemble 			|   	363761.364   			|
 
 
-**Note:**	*The MSE of all models are on test set.* 
-
-The 95% confidence interval for our predictions : [287307.967, 498392.967]
-
-The **R2** score from Stacking Ensemble model predictions is **0.5201**, the model explains half of the observed variation, which is acceptable if not great. (only 784 training and 100 test examples) 
-The model can give much better predictions if fed with more data.
 
 
 
