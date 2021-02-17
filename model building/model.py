@@ -35,7 +35,6 @@ X_train = std_scaler.fit_transform(X_train)
 X_test = std_scaler.transform(X_test)
 
 
-
 from sklearn.ensemble import RandomForestRegressor, VotingRegressor
 
 
