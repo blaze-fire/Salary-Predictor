@@ -12,17 +12,18 @@ def find_jobs_from():
     This function extracts all the desired characteristics of all new job postings
     of the title and States specified and returns them in single file.
     The arguments it takes are:
-        - Website: to specify which website to search 
         - Job_title
         - States
         - Salary
         - Job Description
+        - link
+        - Date
     
     Note : As would be difficult to scrape from next pages as the results in a single page are limited, alternatively search for all the states
            individually and then concatenate all the results. 
     """
     
-    for i in range(40,50001,20):                                                                 # to get results from other pages 
+    for i in range(1,50001,20):                                                                 # to get results from other pages 
         
         job_soup = load_indeed_jobs_div(i)
         jobs_list, num_listings = extract_job_information_indeed(job_soup)
@@ -37,7 +38,7 @@ def find_jobs_from():
 
 def save_jobs_to_excel(jobs_list):
     jobs = pd.DataFrame(jobs_list)
-    jobs.to_csv('C:/Users/krish/Music/Job_ML_project/new_jobs.csv', mode = 'a', index = False, header = None, encoding='utf-8-sig')
+    jobs.to_csv('C:/Users/krish/Music/Job_ML_project/data/raw_data.csv', mode = 'a', index = False, header = None, encoding='utf-8-sig')
 
 
 
@@ -185,7 +186,6 @@ def extract_salary(job_elem):
     else:
         return 'na'
 
-## ================== TO AUTOMATE THE PROCESS  =================== ##
 
 if __name__ == '__main__':
     while True:

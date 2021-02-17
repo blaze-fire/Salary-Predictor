@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import pickle
 
 
-df = pd.read_csv('./data_for_modelling.csv')
+df = pd.read_csv('./data/data_for_modelling.csv')
 
 
 num_df = df.select_dtypes(exclude = 'object')
@@ -80,7 +80,7 @@ pred = rnd_best.predict(X_test)
 np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
 
 
-#filename = 'rnd_best.sav'
+#filename = './all_trained_models/rnd_best.sav'
 #pickle.dump(rnd_best, open(filename, 'wb'))
 
 
@@ -99,6 +99,8 @@ grid.best_params_
 
 np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
 
+#filename = './all_trained_models/svr_best.sav'
+#pickle.dump(svr_best, open(filename, 'wb'))
 
 
 
@@ -115,6 +117,8 @@ pred = lasso_best.predict(X_test)
 np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
 
 
+#filename = './all_trained_models/lasso_best.sav'
+#pickle.dump(lasso_best, open(filename, 'wb'))
 
 
 from sklearn.tree import DecisionTreeRegressor
@@ -127,6 +131,8 @@ pred = dtree.predict(X_test)
 np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
 
 
+#filename = './all_trained_models/DecisionTree.sav'
+#pickle.dump(dtree, open(filename, 'wb'))
 
 
 from xgboost import XGBRegressor
@@ -159,7 +165,7 @@ np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
 
 
 
-#filename = 'xgr_best.sav'
+#filename = './all_trained_models/xgr_best.sav'
 #pickle.dump(xgr_best, open(filename, 'wb'))
 
 
@@ -175,7 +181,7 @@ np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
 
 
 
-#filename = 'Extra_best.sav'
+#filename = './all_trained_models/Extra_best.sav'
 #pickle.dump(extra_reg, open(filename, 'wb'))
 
 
@@ -191,7 +197,7 @@ np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
 
 
 
-#filename = 'GB_best.sav'
+#filename = './all_trained_models/GB_best.sav'
 #pickle.dump(grb_reg, open(filename, 'wb'))
 
 
@@ -208,7 +214,7 @@ pred = vot_reg.predict(X_test)
 np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
 
 
-#filename = 'Voting_best.sav'
+#filename = './all_trained_models/Voting_best.sav'
 #pickle.dump(vot_reg, open(filename, 'wb'))
 
 
