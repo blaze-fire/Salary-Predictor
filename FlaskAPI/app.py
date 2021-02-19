@@ -1,7 +1,6 @@
 import flask
 from flask import Flask, jsonify, request
 import json
-<<<<<<< HEAD
 import numpy as np
 from data_input import data_in
 import pickle
@@ -10,14 +9,11 @@ import pickle
 def load_models():
     model = pickle.load(open('./models/rnd_best.sav', 'rb'))
     return model
-=======
->>>>>>> main
 
 app = Flask(__name__)
 @app.route('/predict', methods=['GET'])
 
 def predict():
-<<<<<<< HEAD
     # stub input features
     # parse input features from request
     request_json = request.get_json()
@@ -29,10 +25,7 @@ def predict():
     prediction = prediction[0]
     response = json.dumps({'response': prediction})
     return response, 200
-=======
- response = json.dumps({'response': 'yahhhh!'})
- return response, 200
->>>>>>> main
+
 
 if __name__ == '__main__':
- application.run(debug=True)
+ app.run(debug=True)
