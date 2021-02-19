@@ -28,15 +28,7 @@ from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(num_df.drop('avg_yearly_sal', axis=1), num_df['avg_yearly_sal'], test_size=100, random_state=42)
 
 
-
-from sklearn.preprocessing import StandardScaler
-std_scaler = StandardScaler()
-X_train = std_scaler.fit_transform(X_train)
-X_test = std_scaler.transform(X_test)
-
-
 from sklearn.ensemble import RandomForestRegressor, VotingRegressor
-
 
 
 rnd_reg = RandomForestRegressor(oob_score=True, random_state=42)
@@ -56,6 +48,21 @@ plt.barh(range(len(idxs)), importances[idxs], align='center')
 plt.yticks(range(len(idxs)), [col_names[i] for i in idxs]) 
 plt.xlabel('Random Forest Feature Importance') 
 plt.show() 
+
+
+x = [col_names[i] for i in idxs][::-1]
+
+cols = ['rating','net_experience', 'jr', 'senior', 'bachelor', 'masters', 'posting_frequency']
+
+X_train = X_train[cols]
+
+X_test = X_test[cols]
+
+
+from sklearn.preprocessing import StandardScaler
+std_scaler = StandardScaler()
+X_train = std_scaler.fit_transform(X_train)
+X_test = std_scaler.transform(X_test)
 
 
 rnd_reg.oob_score_
@@ -155,11 +162,7 @@ xgr_best = grid.best_estimator_
 pred = xgr_best.predict(X_test)
 
 
-
-
 np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
-
-
 
 
 #filename = './all_trained_models/xgr_best.sav'
@@ -207,7 +210,6 @@ vot_reg.fit(X_train, y_train)
 pred = vot_reg.predict(X_test)
 
 
-
 np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
 
 
@@ -250,7 +252,7 @@ from sklearn.metrics import r2_score
 r2_score(y_test, pred)
 
 
-# Our model explains half of the observed variation, which is acceptable if not great.   
+# Our model explains half of the observed variation, which is great.   
 # We can also conclude that the model can give much better predictions if fed with more data.
 
 
