@@ -17,12 +17,7 @@ def home():
     return render_template('index.html')
 
 @app.route('/predict', methods=['POST'])
-def predict():
-    # stub input features
-    # parse input features from request
-    #request_json = request.get_json()
-    #x = request_json['input']
-    #x_in = np.array(x).reshape(1,-1)
+def predict():   
     #'rating','net_experience', 'jr', 'senior', 'bachelor', 'masters', 'posting_frequency'
      
     x_in = [int(x) for x in request.form.values()]
