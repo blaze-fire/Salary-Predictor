@@ -4,7 +4,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import pickle
-
+from joblib import dump, load
 
 df = pd.read_csv('./data/data_for_modelling.csv')
 
@@ -59,11 +59,6 @@ X_train = X_train[cols]
 X_test = X_test[cols]
 
 
-from sklearn.preprocessing import StandardScaler
-std_scaler = StandardScaler()
-X_train = std_scaler.fit_transform(X_train)
-X_test = std_scaler.transform(X_test)
-
 
 rnd_reg.oob_score_
 
@@ -84,8 +79,8 @@ pred = rnd_best.predict(X_test)
 np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
 
 
-#filename = './all_trained_models/rnd_best.sav'
-#pickle.dump(rnd_best, open(filename, 'wb'))
+filename = './all_trained_models/rnd_best.sav'
+pickle.dump(rnd_best, open(filename, 'wb'))
 
 
 # Now we will train and fine tune many models namely Lasso regression, Decision tree, Random Forest, Extra trees, Gradient Boosted trees, Xgboost and then using Voting regressor on best performing models
@@ -103,8 +98,8 @@ grid.best_params_
 
 np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
 
-#filename = './all_trained_models/svr_best.sav'
-#pickle.dump(svr_best, open(filename, 'wb'))
+filename = './all_trained_models/svr_best.sav'
+pickle.dump(svr_best, open(filename, 'wb'))
 
 
 
@@ -121,8 +116,8 @@ pred = lasso_best.predict(X_test)
 np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
 
 
-#filename = './all_trained_models/lasso_best.sav'
-#pickle.dump(lasso_best, open(filename, 'wb'))
+filename = './all_trained_models/lasso_best.sav'
+pickle.dump(lasso_best, open(filename, 'wb'))
 
 
 from sklearn.tree import DecisionTreeRegressor
@@ -131,13 +126,11 @@ dtree.fit(X_train, y_train)
 pred = dtree.predict(X_test)
 
 
-
 np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
 
 
-#filename = './all_trained_models/DecisionTree.sav'
-#pickle.dump(dtree, open(filename, 'wb'))
-
+filename = './all_trained_models/DecisionTree.sav'
+pickle.dump(dtree, open(filename, 'wb'))
 
 from xgboost import XGBRegressor
 xgr = XGBRegressor(random_state=42)
@@ -150,9 +143,7 @@ np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
 
 
 
-
 param_grid = {"learning_rate"    : [0.05, 0.20, 0.30 ] , "max_depth"        : [ 3, ],"gamma"            : [ 0.1, 0.4 ]}
-
 
 
 
@@ -165,8 +156,9 @@ pred = xgr_best.predict(X_test)
 np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
 
 
-#filename = './all_trained_models/xgr_best.sav'
-#pickle.dump(xgr_best, open(filename, 'wb'))
+
+filename = './all_trained_models/Xgr_best.pkl'
+pickle.dump(xgr_best, open(filename, "wb"))
 
 
 
@@ -181,8 +173,8 @@ np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
 
 
 
-#filename = './all_trained_models/Extra_best.sav'
-#pickle.dump(extra_reg, open(filename, 'wb'))
+filename = './all_trained_models/Extra_best.sav'
+pickle.dump(extra_reg, open(filename, 'wb'))
 
 
 
@@ -197,8 +189,8 @@ np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
 
 
 
-#filename = './all_trained_models/GB_best.sav'
-#pickle.dump(grb_reg, open(filename, 'wb'))
+filename = './all_trained_models/GB_best.sav'
+pickle.dump(grb_reg, open(filename, 'wb'))
 
 
 # Now using Voting regressor to train on the best performing models so far, which averages the individual prediction to form a final prediction.
@@ -213,16 +205,45 @@ pred = vot_reg.predict(X_test)
 np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
 
 
-#filename = './all_trained_models/Voting_best.sav'
-#pickle.dump(vot_reg, open(filename, 'wb'))
+filename = './all_trained_models/voting_best.sav'
+pickle.dump(vot_reg, open(filename, "wb"))
+
+
+# KNN
+from sklearn.neighbors import KNeighborsRegressor
+
+knn = KNeighborsRegressor()
+
+
+param_grid = {"n_neighbors"    : [3, 5, 9, 11] , "weights"        : [ 'uniform', 'distance' ], "metric"            : [ 'euclidean', 'manhattan']}
+
+grid = GridSearchCV(knn, param_grid=param_grid)
+grid.fit(X_train, y_train)
+knn_best = grid.best_estimator_
+pred = knn_best.predict(X_test)
+
+np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
+
+
+filename = './all_trained_models/knn_best.sav'
+pickle.dump(vot_reg, open(filename, "wb"))
 
 
 # We can see that we have used some really powerful models like Random forest, ExtraTrees, Gradient boosted trees and Xgboost models as the complexity of problem is high but the available data is small. (784 training and 100 test examples) 
 # Lets go one step further and create a blender of best models so far, to squeeze a bit more performance from our models
+X_test[0, :].shape
+# models to use in our blender 
+estimators = [rnd_best, dtree]
+X_test[0,:].reshape(1,-1).shape
 
-# models to use in our blender
-estimators = [rnd_best, xgr_best, vot_reg, dtree, extra_reg, grb_reg]
+ans=[]
+for reg in estimators:
+    pred = reg.predict(X_test)
+    ans.append(pred)
 
+ans = sum(ans)/len(ans)
+
+np.sqrt(mean_squared_error(np.exp(y_test), np.exp(ans)))
 
 X_train_predictions = np.empty((len(X_train), len(estimators)), dtype = np.float32)
 
@@ -252,6 +273,13 @@ from sklearn.metrics import r2_score
 r2_score(y_test, pred)
 
 
+# calculate 95 percent confidence interval for our predictions
+from scipy import stats
+confidence = 0.95
+squared_errors = (np.exp(ans) - np.exp(y_test)) ** 2
+np.sqrt(stats.t.interval(confidence, len(squared_errors) - 1, 
+                        loc=squared_errors.mean(), 
+                        scale=stats.sem(squared_errors))) 
 # Our model explains half of the observed variation, which is great.   
 # We can also conclude that the model can give much better predictions if fed with more data.
 
