@@ -14,17 +14,26 @@
 
 <body>
   <div class="login">
-    <h1>Predict Salary Analysis</h1>
-
+    <h1>Salary Prediction</h1>
+    <h3>Pls fill integers as input <br> </h3>
+    <pre> 
+        Rating            : Any integer (0 - 5)         <br> 
+        Net Experience    : Any positive integer        <br>
+        Junior            : 1 if junior position else 0 <br>
+        Senior            : 1 if senior position else 0 <br>
+        Bachelor          : 1 if senior position else 0 <br>
+        Masters           : 1 if senior position else 0 <br>
+        Posting Frequency : Any positive integer <br>
+    </pre>
     <!-- Main Input For Receiving Query to our ML -->
     <form action="{{ url_for('predict')}}" method="post">
-      <input type="text" name="rating " placeholder="rating" required="required" />
-      <input type="text" name="net_experience" placeholder="net_experience" required="required" />
-      <input type="text" name="jr" placeholder="jr" required="required" />
-      <input type="text" name="senior" placeholder="senior" required="required" />
-      <input type="text" name="bachelor" placeholder="bachelor" required="required" />
-      <input type="text" name="masters" placeholder="masters" required="required" />
-      <input type="text" name="posting_frequency" placeholder="posting_frequency" required="required" />
+      <input type="text" name="rating " placeholder="Rating(0-5)" required="required" />
+      <input type="text" name="net_experience" placeholder="Net Experience" required="required" />
+      <input type="text" name="jr" placeholder="Junior" required="required" />
+      <input type="text" name="senior" placeholder="Senior" required="required" />
+      <input type="text" name="bachelor" placeholder="Bachelor" required="required" />
+      <input type="text" name="masters" placeholder="Masters" required="required" />
+      <input type="text" name="posting_frequency" placeholder="Posting Frequency" required="required" />
 
       <button type="submit" class="btn btn-primary btn-block btn-large">Predict</button>
     </form>
