@@ -1,30 +1,41 @@
 import flask
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 import json
 import numpy as np
-from data_input import data_in
 import pickle
 
 
-def load_models():
-    model = pickle.load(open('./models/rnd_best.sav', 'rb'))
-    return model
+rnd_best = pickle.load(open('./models/rnd_best.sav', 'rb'))
+dtree = pickle.load(open('./models/DecisionTree.sav', 'rb'))    
+
+estimators = [rnd_best, dtree]
 
 app = Flask(__name__)
-@app.route('/predict', methods=['GET'])
 
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+@app.route('/predict', methods=['POST'])
 def predict():
     # stub input features
     # parse input features from request
-    request_json = request.get_json()
-    x = request_json['input']
-    x_in = np.array(x).reshape(1,-1)
-    # load model
-    model = load_models()
-    prediction = np.exp(model.predict(x_in))
-    prediction = prediction[0]
-    response = json.dumps({'response': prediction})
-    return response, 200
+    #request_json = request.get_json()
+    #x = request_json['input']
+    #x_in = np.array(x).reshape(1,-1)
+    #'rating','net_experience', 'jr', 'senior', 'bachelor', 'masters', 'posting_frequency'
+     
+    x_in = [int(x) for x in request.form.values()]
+    x_in = np.array(x_in).reshape(1,-1)
+
+    ans=[]
+    for reg in estimators:
+        pred = reg.predict(x_in)
+        ans.append(pred[0])
+    
+    prediction = round(np.exp(sum(ans)/len(ans)), 2)
+    
+    return render_template('index.html', prediction_text='Your predicted salary is {}'.format(prediction))
 
 
 if __name__ == '__main__':

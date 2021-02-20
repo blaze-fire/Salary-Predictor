@@ -18,11 +18,13 @@
 
     <!-- Main Input For Receiving Query to our ML -->
     <form action="{{ url_for('predict')}}" method="post">
-      <input type="text" name="experience" placeholder="Experience" required="required" />
-      <input type="text" name="test_score" placeholder="Rating" required="required" />
-      <input type="text" name="interview_score" placeholder="Skills" required="required" />
-      <input type="text" name="interview_score" placeholder="Job Title" required="required" />
-      <input type="text" name="interview_score" placeholder="Job Seniority" required="required" />
+      <input type="text" name="rating " placeholder="rating" required="required" />
+      <input type="text" name="net_experience" placeholder="net_experience" required="required" />
+      <input type="text" name="jr" placeholder="jr" required="required" />
+      <input type="text" name="senior" placeholder="senior" required="required" />
+      <input type="text" name="bachelor" placeholder="bachelor" required="required" />
+      <input type="text" name="masters" placeholder="masters" required="required" />
+      <input type="text" name="posting_frequency" placeholder="posting_frequency" required="required" />
 
       <button type="submit" class="btn btn-primary btn-block btn-large">Predict</button>
     </form>
