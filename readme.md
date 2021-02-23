@@ -67,7 +67,7 @@ Now lets look at average salary wrt to job role<br><br>
 
 Lets look at states having the highest job openings at the time of data collected<br><br>
 ![](Images/openings_in_states.png)<br><br>
-Most job openings are in Karnataka, followed by Delhi<br><br>
+Most job openings are in Delhi, followed by Karnataka<br><br>
 
 
 Lets now look at top 10 companies offering highest salaries wrt seniority<br><br>
