@@ -93,7 +93,6 @@ Also created a blender of best models, to squeeze a bit more performance from th
 
 To run the notebook unzip the all_models zip in the folder all_trained_models.
 
-To view results : **[Jupyter Notebook](https://github.com/blaze-fire/Salary-Predictor/blob/main/model.ipynb)** <br><br>
 As the dataset was quite samall, RandomForest was used to generate the feature importances of variables to get an idea of how useful our variables are in predicting target values
 
 Following is the plot for top 10 useful features according to RandomForest
