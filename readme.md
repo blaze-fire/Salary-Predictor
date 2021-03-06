@@ -60,6 +60,8 @@ Lets now look at most mentioned skills in the requirements section by recruiting
 From the wordcloud we can see some of the trending skills in software industry<br>
 Looks like most jobs are for front end, most popular framework is .net and the most asked for programming language is python, php and java<br>
 
+Plot for frequency of a particular skill ocurring in requirements column<br>
+![](Images/freq_vs_skill.png)<br><br>
 
 Now lets look at average salary wrt to job role<br><br>
 ![](Images/top_paying_skill.png)<br><br>
