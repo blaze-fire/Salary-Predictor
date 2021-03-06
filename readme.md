@@ -31,7 +31,7 @@ First, there are a lot of missing values, especially of the target variable<br><
 ![](Images/missing_values.png)<br><br>
 
 Lets look at salary distribution<br><br>
-![](Images/job_dist.png)<br><br>
+![](Images/job_dist.png)<br>
 
 Clearly the salary distribution is not uniform with most annual salries below Rs.1000000 and a few high salaries<br><br>
 
