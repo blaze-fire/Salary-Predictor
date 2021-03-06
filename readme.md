@@ -33,6 +33,8 @@ First, there are a lot of missing values, especially of the target variable<br><
 Lets look at salary distribution<br><br>
 ![](Images/job_dist.png)<br><br>
 
+Clearly the salary distribution is not uniform with most annual salries below Rs.1000000 and a few high salaries<br><br>
+
 Lets look at income categories where salaries fall in<br><br>
 ![](Images/income_cat.png)<br><br>
 Most annual incomes are in the range of 1 to 5 lpa<br>
