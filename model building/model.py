@@ -129,8 +129,8 @@ pred = dtree.predict(X_test)
 np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
 
 
-filename = './all_trained_models/DecisionTree.sav'
-pickle.dump(dtree, open(filename, 'wb'))
+#filename = './all_trained_models/DecisionTree.sav'
+#pickle.dump(dtree, open(filename, 'wb'))
 
 from xgboost import XGBRegressor
 xgr = XGBRegressor(random_state=42)
@@ -235,8 +235,8 @@ X_test[0, :].shape
 # models to use in our blender 
 
 estimators = [rnd_best, dtree]
-X_test[0,:].reshape(1,-1).shape
 
+# Averaging Predictions
 ans=[]
 for reg in estimators:
     pred = reg.predict(X_test)
@@ -245,6 +245,9 @@ for reg in estimators:
 ans = sum(ans)/len(ans)
 
 np.sqrt(mean_squared_error(np.exp(y_test), np.exp(ans)))
+
+
+#Ensemble
 
 X_train_predictions = np.empty((len(X_train), len(estimators)), dtype = np.float32)
 
