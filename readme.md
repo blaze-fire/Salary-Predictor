@@ -12,7 +12,7 @@ As an engineering student currently in my 2nd year, I would be sitting for my in
 ## Table of contents
 * [Data Scraping](https://github.com/blaze-fire/Salary-Predictor/blob/main/scraping%20and%20cleaning%20data/indeed_jobs_scraper.py)
 * [Data Cleaning](https://github.com/blaze-fire/Salary-Predictor/blob/main/scraping%20and%20cleaning%20data/data_cleaning.py)
-* [Feature Engineering](https://github.com/blaze-fire/Salary-Predictor/blob/main/feature_engineering.ipynb)
+* [Feature Engineering](https://github.com/blaze-fire/Salary-Predictor/blob/main/feature_engineering/feature_engineering.py)
 * [Observations](#observations)
 * [Model Building](#model-building)
 * [Results](#results)
