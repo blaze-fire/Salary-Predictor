@@ -6,9 +6,8 @@ from nltk.tokenize import word_tokenize
 
 df = pd.read_csv('./data/data_cleaned.csv')
 
+
 # to calculate max and min Salary per annum
-
-
 def Salary(df):
     
     yearly_min = {}
@@ -162,8 +161,8 @@ df = calc_experience(df)
 
 print('Experience Calculated')
 
-#Educational criteria mentioned by these companies can also be useful
 
+#Educational criteria mentioned by these companies can also be useful
 def education(df):
     def education_level(data):
         if 'bachelor' in data.replace('year',' ').replace("'",' ').lower().split():
@@ -196,16 +195,20 @@ def seniority(title):
 # to calculate the seniority of the position applying for
 df['job_title'] = df['Job_position'].apply(seniority)
 
-'''For encoding rank transforamtion, label encoding, frequency encoding were applied but they had very weak correlation with avg_year_Salary
-as the categories of seniority is only jr, senior or na, we can one hot encode them'''
+'''
+    For encoding rank transforamtion, label encoding, frequency encoding were applied but they had very weak correlation with avg_year_Salary
+    as the categories of seniority is only jr, senior or na, we can one hot encode them
+'''
 
 df = pd.concat([df, pd.get_dummies(df['job_title'])], axis=1)
 
 
 
 
-'''Upon analyzing the requirements column following are the most popular professions
-lets store their frequencies'''
+'''
+    Upon analyzing the requirements column following are the most popular professions
+    lets store their frequencies
+'''
 
 def profession(df):
     def calc_jobs(data):
@@ -359,8 +362,8 @@ def analyze_skills(df):
     job_role_dict = calc_skill_freq(job_role)
 
     '''
-    Below we first pass all the elements of the first dictionary into the third one and then pass the second dictionary into the third. This will replace the duplicate keys of the first dictionary.
-    More info : (https://www.geeksforgeeks.org/python-merging-two-dictionaries/)
+        Below we first pass all the elements of the first dictionary into the third one and then pass the second dictionary into the third. This will replace the duplicate keys of the first dictionary.
+        More info : (https://www.geeksforgeeks.org/python-merging-two-dictionaries/)
     '''
 
     skills_dict = {**job_role_dict, **job_descr_dict}
