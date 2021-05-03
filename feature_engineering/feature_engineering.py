@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from nltk.tokenize import word_tokenize
 
-df = pd.read_csv('./data/data_cleaned.csv')
+df = pd.read_csv(r'C:\Users\krish\Music\Job_ML_project\data\data_cleaned_check.csv')
 
 
 # to calculate max and min Salary per annum
@@ -418,7 +418,7 @@ df = df.loc[:, (df != df.iloc[0]).any()]
 print('\n Everything Fine :) \n \n')
 print(df)
 
-#df.to_csv('./data/data_prepared.csv', index=False)
+df.to_csv(r'C:\Users\krish\Music\Job_ML_project\data\data_prepared_check.csv', index=False)
 
 
     

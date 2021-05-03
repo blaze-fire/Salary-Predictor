@@ -5,10 +5,7 @@ import numpy as np
 import pickle
 
 
-rnd_best = pickle.load(open('./models/rnd_best.sav', 'rb'))
-dtree = pickle.load(open('./models/DecisionTree.sav', 'rb'))    
-
-estimators = [rnd_best, dtree]
+best_model = pickle.load(open('./models/best_model.sav', 'rb'))
 
 app = Flask(__name__)
 
@@ -20,17 +17,15 @@ def home():
 def predict():   
     #'rating','net_experience', 'jr', 'senior', 'bachelor', 'masters', 'posting_frequency'
      
-    x_in = [int(x) for x in request.form.values()]
+    x_in = [float(x) for x in request.form.values()]
     x_in = np.array(x_in).reshape(1,-1)
 
-    ans=[]
-    for reg in estimators:
-        pred = reg.predict(x_in)
-        ans.append(pred[0])
+    pred = best_model.predict(x_in)
     
-    prediction = round(np.exp(sum(ans)/len(ans)), 2)
+    #prediction = np.round(np.exp(pred), 2)
+    prediction = np.exp(pred)
     
-    return render_template('index.html', prediction_text='Your predicted salary is {}'.format(prediction))
+    return render_template('index.html', prediction_text='Your predicted annual salary is {}'.format(prediction))
 
 
 if __name__ == '__main__':

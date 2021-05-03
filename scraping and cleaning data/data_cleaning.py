@@ -9,13 +9,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# data collected was saved to two excel sheets
-df1 = pd.read_excel(r'C:\Users\krish\Music\Job_ML_project\data\raw_data.xlsx', sheet_name='Sheet1', names=['Job_position', 'Company', 'Location', 'Salary', 'posting_time', 'requirements', 'rating', 'experience', 'link'], na_values=['#NAME?'], engine='openpyxl' )
-df2 = pd.read_excel(r'C:\Users\krish\Music\Job_ML_project\data\raw_data.xlsx', sheet_name='Sheet2', names=['Job_position', 'Company', 'Location', 'Salary', 'posting_time', 'requirements', 'rating', 'experience', 'link'], na_values=['#NAME?'], engine='openpyxl' )
+# data collected was saved in a csv file
 
-df = pd.concat([df1, df2])
-
-df.index = np.arange(0, len(df))
+df = pd.read_csv(r'C:\Users\krish\Music\Job_ML_project\data\raw_data.csv')
 
 # link & posting time for the jobs columns are not important for our analysis so we will drop them
 df.drop('link', axis=1, inplace=True) 
@@ -76,5 +72,5 @@ df['Salary'] = df['Salary'].apply(lambda x: str(x).replace('\n',''))
 df['Salary'] = df['Salary'].apply(lambda x: str(x).replace('₹',''))
 
 
-df.to_csv('./data_cleaned.csv', index = False)
+df.to_csv(r'C:\Users\krish\Music\Job_ML_project\data\data_cleaned_check.csv', index = False)
 print('\n\n File Saved !!')
