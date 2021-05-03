@@ -22,8 +22,7 @@ def predict():
 
     pred = best_model.predict(x_in)
     
-    #prediction = np.round(np.exp(pred), 2)
-    prediction = np.exp(pred)
+    prediction = np.round(np.exp(pred), 2)
     
     return render_template('index.html', prediction_text='Your predicted annual salary is {}'.format(prediction))
 
