@@ -72,5 +72,5 @@ df['Salary'] = df['Salary'].apply(lambda x: str(x).replace('\n',''))
 df['Salary'] = df['Salary'].apply(lambda x: str(x).replace('₹',''))
 
 
-df.to_csv(r'C:\Users\krish\Music\Job_ML_project\data\data_cleaned_check.csv', index = False)
+df.to_csv(r'C:\Users\krish\Music\Job_ML_project\data\data_cleaned.csv', index = False)
 print('\n\n File Saved !!')

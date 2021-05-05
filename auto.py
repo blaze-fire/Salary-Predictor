@@ -220,7 +220,7 @@ def calc_experience(df):
     for p in ['²', '0080091', '2020', '2024', '2019', '90', '88', '32', '48', '40', '50', '24']:
         df['exp2'] = df['exp2'].apply(lambda x: str(x).replace(p,'-99'))
 
-    df['exp2'] = df['exp2'].astype('int32')
+    df['exp2'] = df['exp2'].apply(lambda x: int(x) if x.isdigit() else -99)
 
     #where experience required is mentioned in requirements column but missing in experience column
     df['net_experience'] = df['net_experience'].where((df['net_experience']>0), df['exp2'])
@@ -238,7 +238,7 @@ def calc_experience(df):
                 if word == 'jr' or word == 'junior' or word == 'fresher' or word == 'intern' or word == 'intership' or word == 'interns' or word == 'freshers':
                     df.loc[i, 'net_experience'] = 0
                 else:
-                    df[i, 'net_experience'] = -99 
+                    df.loc[i, 'net_experience'] = -99 
 
 
 
@@ -517,7 +517,7 @@ Note:
 We calculate ratings before because we impute average year salary in the next step and dont want ratings to be calculated with imputed salaries but with orignal available salaries
 '''
 
-
+'''
 rating_freq = pd.pivot_table(df[(df['rating'] > 0) & (df['avg_yearly_sal'] != 0)], index='income_cat', values='rating')
 freq = df[(df['rating'] > 0) & (df['avg_yearly_sal'] != 0)].groupby('rating')['avg_yearly_sal'].median()
 
@@ -549,7 +549,7 @@ for i in df[(df['rating'] == 0) & (df['avg_yearly_sal'] != 0)].index:
     if df.loc[i, 'income_cat'] == 6:
         df.loc[i, 'rating'] = 4.4
 
-
+'''
 
 #We want to train our models on the available yearly salaries only, lets filter them out
 df = df[df['avg_yearly_sal'] > 0]
@@ -663,6 +663,7 @@ lasso_best = grid.best_estimator_
 pred = lasso_best.predict(X_test)
 
 
+np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
 
 
 #filename = './all_trained_models/lasso_best.sav'
@@ -685,7 +686,7 @@ np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
 from xgboost import XGBRegressor
 xgr = XGBRegressor(random_state=42)
 
-param_grid = {"learning_rate"    : [0.05, 0.20, 0.30 ] , "max_depth"        : [ 3, ],"gamma"            : [ 0.1, 0.4 ]}
+param_grid = {"learning_rate"    : [0.1, 0.20] , "max_depth"        : [ 5, 6],"gamma" : [ 0.1]}
 
 grid = GridSearchCV(xgr, param_grid=param_grid)
 grid.fit(X_train, y_train)
@@ -694,9 +695,6 @@ pred = xgr_best.predict(X_test)
 
 
 np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
-
-
-
 
 
 from sklearn.ensemble import ExtraTreesRegressor
@@ -719,6 +717,8 @@ grb_reg = GradientBoostingRegressor(loss='lad', random_state=42)
 grb_reg.fit(X_train, y_train)
 pred = grb_reg.predict(X_test)
 
+np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
+
 
 #filename = './all_trained_models/voting_best.sav'
 #pickle.dump(vot_reg, open(filename, "wb"))
@@ -738,56 +738,7 @@ knn_best = grid.best_estimator_
 pred = knn_best.predict(X_test)
 
 np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
-
-print(X_test.columns)
-from xgboost import XGBRegressor
-xgr = XGBRegressor(random_state=42)
-xgr.fit(X_train, y_train)
-param_grid = {"learning_rate"    : [0.05, 0.20, 0.30 ] , "max_depth"        : [ 3, ],"gamma"            : [ 0.1, 0.4 ]}
-
-grid = GridSearchCV(xgr, param_grid=param_grid)
-grid.fit(X_train, y_train)
-xgr_best = grid.best_estimator_
-pred = xgr_best.predict(X_test)
-
-
-
-
-results = {}
-for model in [rnd_best, svr_best, lasso_best, dtree, xgr_best, extra_reg, grb_reg, knn_best]:
-    pred = model.predict(X_test)
-    score = np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
-    results[model] = score
-    print('{} : {}'.format(model.__class__.__name__, score))
-
-sorted_dict = dict(sorted(results.items(), key=lambda x: x[1]))
-
-ref_model, refrence_val= list(sorted_dict.items())[0]
-
-selected_models = []
-selected_models.append(ref_model) 
-
-for key, value in list(sorted_dict.items())[1:]:
-    if (value - refrence_val)/refrence_val*100 <=25:
-        selected_models.append(key)
-    
-
-estimators = []
-for model in selected_models:
-    estimators.append((model.__class__.__name__, model))    
-
-
-vot_reg = VotingRegressor(estimators=estimators)
-
-vot_reg.fit(X_train, y_train)
-pred = vot_reg.predict(X_test)
-
-
-np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
-
-    
-    
-
+ 
 
 results = {}
 for model in [rnd_best, svr_best, lasso_best, dtree, xgr_best, extra_reg, grb_reg, knn_best]:
@@ -822,6 +773,14 @@ pred = vot_reg.predict(X_test)
 
 
 vot_reg_score = np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
+
+from catboost import CatBoostRegressor
+
+catboost_reg = CatBoostRegressor(iterations=1000)
+catboost_reg.fit(X_train, y_train)
+pred = catboost_reg.predict(X_test)
+
+np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
 
 
 if refrence_val > vot_reg_score:
