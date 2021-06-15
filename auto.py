@@ -21,9 +21,11 @@ from sklearn.svm import SVR
 from sklearn.metrics import r2_score
 from scipy import stats
 
+''' Data Cleaning '''
+
 # data collected was saved in a csv file
 
-df = pd.read_csv(r'data\raw_data.csv')
+df = pd.read_csv(r'data/raw_data.csv')
 
 # link & posting time for the jobs columns are not important for our analysis so we will drop them
 df.drop('link', axis=1, inplace=True) 
@@ -136,17 +138,17 @@ def Salary(df):
                 
         
         if 'an hour' in df['Salary'][i]:
-            sal_min = df['Salary'][i].split('-')[0].replace('an hour','').replace(',','')
-            yearly_min[i] = int(sal_min) * 9 * 22 * 12
+            sal_min = df['Salary'][i].split('-')[0].replace('an hour','').replace(',','').replace(' ','')
+            yearly_min[i] = float(sal_min) * 9 * 22 * 12
             
             try:
-                sal_max = df['Salary'][i].split('-')[1].replace('an hour','').replace(',','')
-                yearly_max[i] = int(sal_max) * 9 * 22 * 12  
+                sal_max = df['Salary'][i].split('-')[1].replace('an hour','').replace(',','').replace(' ','')
+                yearly_max[i] = float(sal_max) * 9 * 22 * 12  
                 
             # if only single value present will be stored in both max and min, so the average comes accuate
             except:
-                sal_max = df['Salary'][i].split('-')[0].replace('an hour','').replace(',','')
-                yearly_max[i] = int(sal_max) * 9 * 22 * 12
+                sal_max = df['Salary'][i].split('-')[0].replace('an hour','').replace(',','').replace(' ','')
+                yearly_max[i] = float(sal_max) * 9 * 22 * 12
     
     # min, max and avg Salary columns
     df['min_Salary'] = pd.DataFrame(yearly_min.values(), index= yearly_min.keys())
@@ -173,6 +175,7 @@ def Salary(df):
 df = Salary(df)
 
 print('Salary Calculated')
+
 
 def calc_experience(df):
     #Experience is mentioned in both requirements and experience so we will collect them all and save it in a column of experience
@@ -363,11 +366,13 @@ def analyze_skills(df):
                 x.replace('.',' ')
                 job_descr.append(x)
 
+
     # Remove punctuation and convert to lower case
     for x in range(0,len(job_descr)):
         for p in ['.', '-', ')', '(', '…', ',', ':', "'"]:
             job_descr[x] = job_descr[x].replace(p,' ')
         job_descr[x] = job_descr[x].lower()
+
 
     # analyzing keywords from custom keyword list
     f = open("./utils/skills.txt","r",) 
@@ -506,7 +511,6 @@ df = df.loc[:, (df != df.iloc[0]).any()]
 print('\n Everything Fine :) \n \n')
 print(df)
 
-#df.to_csv(r'C:\Users\krish\Music\Job_ML_project\data\data_prepared_check.csv', index=False)
 
 '''
 Now we are going to do 2 things:
@@ -617,8 +621,6 @@ from sklearn.metrics import mean_squared_error
 
 
 # Lets tune our random forest for better performance
-
-
 param_grid = {'n_estimators' : [100, 300, 500]}
 grid = GridSearchCV(RandomForestRegressor(), param_grid=param_grid)
 grid.fit(X_train, y_train)
@@ -626,16 +628,11 @@ rnd_best = grid.best_estimator_
 pred = rnd_best.predict(X_test)
 
 
-np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
-
-
-#filename = './all_trained_models/rnd_best.sav'
-#pickle.dump(rnd_best, open(filename, 'wb'))
-
 
 # Now we will train and fine tune many models namely Lasso regression, Decision tree, Random Forest, Extra trees, Gradient Boosted trees, Xgboost and then using Voting regressor on best performing models
 
 
+#SVR
 from sklearn.svm import SVR
 svr = SVR()
 param_grid = {'gamma': ['scale','auto'], 'C': [0.5, 1, 1.5]}
@@ -644,16 +641,9 @@ grid.fit(X_train, y_train)
 svr_best = grid.best_estimator_
 pred = svr_best.predict(X_test)
 
-grid.best_params_
-
-np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
-
-#filename = './all_trained_models/svr_best.sav'
-#pickle.dump(svr_best, open(filename, 'wb'))
 
 
-
-
+#Lasso
 from sklearn.linear_model import Lasso
 lasso = Lasso(random_state=42)
 param_grid = {'alpha': np.arange(1,101)/100, 'max_iter': [1000, 3000, 6000, 10000]} 
@@ -663,26 +653,16 @@ lasso_best = grid.best_estimator_
 pred = lasso_best.predict(X_test)
 
 
-np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
 
-
-#filename = './all_trained_models/lasso_best.sav'
-#pickle.dump(lasso_best, open(filename, 'wb'))
-
-
+#DTree
 from sklearn.tree import DecisionTreeRegressor
 dtree = DecisionTreeRegressor(criterion='mae', random_state=42)
 dtree.fit(X_train, y_train)
 pred = dtree.predict(X_test)
 
 
-np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
 
-
-
-#filename = './all_trained_models/DecisionTree.sav'
-#pickle.dump(dtree, open(filename, 'wb'))
-
+#XGBoost
 from xgboost import XGBRegressor
 xgr = XGBRegressor(random_state=42)
 
@@ -694,34 +674,21 @@ xgr_best = grid.best_estimator_
 pred = xgr_best.predict(X_test)
 
 
-np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
 
 
+#ExtraTrees
 from sklearn.ensemble import ExtraTreesRegressor
 extra_reg = ExtraTreesRegressor(n_estimators=500, random_state=42)
 extra_reg.fit(X_train, y_train)
 pred = extra_reg.predict(X_test)
 
 
-np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
 
-
-
-#filename = './all_trained_models/Extra_best.sav'
-#pickle.dump(extra_reg, open(filename, 'wb'))
-
-
-
+#GBT
 from sklearn.ensemble import GradientBoostingRegressor
 grb_reg = GradientBoostingRegressor(loss='lad', random_state=42)
 grb_reg.fit(X_train, y_train)
 pred = grb_reg.predict(X_test)
-
-np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
-
-
-#filename = './all_trained_models/voting_best.sav'
-#pickle.dump(vot_reg, open(filename, "wb"))
 
 
 # KNN
@@ -737,8 +704,6 @@ grid.fit(X_train, y_train)
 knn_best = grid.best_estimator_
 pred = knn_best.predict(X_test)
 
-np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
- 
 
 results = {}
 for model in [rnd_best, svr_best, lasso_best, dtree, xgr_best, extra_reg, grb_reg, knn_best]:
@@ -774,14 +739,6 @@ pred = vot_reg.predict(X_test)
 
 vot_reg_score = np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
 
-from catboost import CatBoostRegressor
-
-catboost_reg = CatBoostRegressor(iterations=1000)
-catboost_reg.fit(X_train, y_train)
-pred = catboost_reg.predict(X_test)
-
-np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
-
 
 if refrence_val > vot_reg_score:
     vot_reg = VotingRegressor(estimators=estimators)
@@ -795,3 +752,6 @@ else:
     filename = './all_trained_models/best_model.sav'
     print(ref_model.__class__.__name__)
     pickle.dump(ref_model, open(filename, 'wb'))
+
+
+

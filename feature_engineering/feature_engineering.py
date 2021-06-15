@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from nltk.tokenize import word_tokenize
 
-df = pd.read_csv(r'C:\Users\krish\Music\Job_ML_project\data\data_cleaned_check.csv')
+df = pd.read_csv(r'C:\Users\krish\Music\Job_ML_project\data\data_cleaned.csv')
 
 
 # to calculate max and min Salary per annum
@@ -130,10 +130,8 @@ def calc_experience(df):
     for p in ['²', '0080091', '2020', '2024', '2019', '90', '88', '32', '48', '40', '50', '24']:
         df['exp2'] = df['exp2'].apply(lambda x: str(x).replace(p,'-99'))
 
-    
     df['exp2'] = df['exp2'].apply(lambda x: int(x) if x.isdigit() else -99)
-    
-    
+
     #where experience required is mentioned in requirements column but missing in experience column
     df['net_experience'] = df['net_experience'].where((df['net_experience']>0), df['exp2'])
     df.drop('exp2', axis=1, inplace=True)
@@ -161,8 +159,7 @@ df = calc_experience(df)
 
 print('Experience Calculated')
 
-df['exp2'] = df['exp2'].apply(lambda x: int(x) if x.isdigit() else -99)
-df['exp2']
+
 #Educational criteria mentioned by these companies can also be useful
 def education(df):
     def education_level(data):
@@ -419,7 +416,8 @@ df = df.loc[:, (df != df.iloc[0]).any()]
 print('\n Everything Fine :) \n \n')
 print(df)
 
-df.to_csv(r'C:\Users\krish\Music\Job_ML_project\data\data_prepared_check.csv', index=False)
+
+df.to_csv(r'C:\Users\krish\Music\Job_ML_project\data\data_prepared.csv', index=False)
 
 
     
