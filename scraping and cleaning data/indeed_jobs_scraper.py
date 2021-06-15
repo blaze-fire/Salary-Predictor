@@ -38,14 +38,20 @@ def find_jobs_from():
 
 def save_jobs_to_excel(jobs_list):
     jobs = pd.DataFrame(jobs_list)
-    jobs.to_csv('C:/Users/krish/Music/Job_ML_project/data/raw_data.csv', mode = 'a', index = False, header = None, encoding='utf-8-sig')
+    jobs.to_csv('/home/krish/Music/Job_ML_project/data/raw_data.csv', mode = 'a', index = False, header = None, encoding='utf-8-sig')
 
 
 
 ## ================== FUNCTIONS FOR INDEED.CO.IN =================== ##
 
 def load_indeed_jobs_div(i):
-    url = ('https://in.indeed.com/jobs?q=software+developer&fromage=last&start=' + str(i))
+    #url = ('https://in.indeed.com/jobs?q=software+developer&fromage=last&start=' + str(i))
+
+    url = ('https://in.indeed.com/jobs?q=machine+learning&l=india&start=' + str(i))
+
+    #url = ('https://in.indeed.com/jobs?q=analyst&l=india&start=' + str(i))
+    #url = ('https://in.indeed.com/jobs?q=IT&l=india&start=' + str(i))
+    #url = ('https://in.indeed.com/jobs?q=software&l=india&start=' + str(i))
 
     page = requests.get(url)
     soup = BeautifulSoup(page.content, "html.parser")

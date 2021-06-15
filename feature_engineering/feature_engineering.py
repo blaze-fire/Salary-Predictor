@@ -1,10 +1,8 @@
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
 from nltk.tokenize import word_tokenize
 
-df = pd.read_csv(r'C:\Users\krish\Music\Job_ML_project\data\data_cleaned_check.csv')
+df = pd.read_csv(r'C:\Users\krish\Music\Job_ML_project\data\data_cleaned.csv')
 
 
 # to calculate max and min Salary per annum
@@ -132,7 +130,7 @@ def calc_experience(df):
     for p in ['²', '0080091', '2020', '2024', '2019', '90', '88', '32', '48', '40', '50', '24']:
         df['exp2'] = df['exp2'].apply(lambda x: str(x).replace(p,'-99'))
 
-    df['exp2'] = df['exp2'].astype('int32')
+    df['exp2'] = df['exp2'].apply(lambda x: int(x) if x.isdigit() else -99)
 
     #where experience required is mentioned in requirements column but missing in experience column
     df['net_experience'] = df['net_experience'].where((df['net_experience']>0), df['exp2'])
@@ -150,7 +148,7 @@ def calc_experience(df):
                 if word == 'jr' or word == 'junior' or word == 'fresher' or word == 'intern' or word == 'intership' or word == 'interns' or word == 'freshers':
                     df.loc[i, 'net_experience'] = 0
                 else:
-                    df[i, 'net_experience'] = -99 
+                    df.loc[i, 'net_experience'] = -99 
 
 
 
@@ -418,7 +416,8 @@ df = df.loc[:, (df != df.iloc[0]).any()]
 print('\n Everything Fine :) \n \n')
 print(df)
 
-df.to_csv(r'C:\Users\krish\Music\Job_ML_project\data\data_prepared_check.csv', index=False)
+
+df.to_csv(r'C:\Users\krish\Music\Job_ML_project\data\data_prepared.csv', index=False)
 
 
     

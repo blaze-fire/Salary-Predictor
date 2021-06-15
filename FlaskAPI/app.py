@@ -5,7 +5,7 @@ import numpy as np
 import pickle
 
 
-best_model = pickle.load(open('./models/best_model.sav', 'rb'))
+best_model = pickle.load(open('./FlaskAPI/models/best_model.sav', 'rb'))
 
 app = Flask(__name__)
 
