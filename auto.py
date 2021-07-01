@@ -1,4 +1,4 @@
-# To process everything and get desired model with a single click
+# To process everything and get the desired model with a single click
 
 import pandas as pd
 import numpy as np
