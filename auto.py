@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from nltk.tokenize import word_tokenize
 import pickle
-from joblib import dump, load
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
@@ -18,8 +17,7 @@ from xgboost import XGBRegressor
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.linear_model import Lasso
 from sklearn.svm import SVR
-from sklearn.metrics import r2_score
-from scipy import stats
+
 
 ''' Data Cleaning '''
 
