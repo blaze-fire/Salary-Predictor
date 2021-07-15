@@ -27,54 +27,55 @@ from scipy import stats
 
 df = pd.read_csv(r'data/raw_data.csv')
 
-# link & posting time for the jobs columns are not important for our analysis so we will drop them
-df.drop('link', axis=1, inplace=True) 
-df.drop('posting_time', axis=1, inplace=True) 
+def clean_data(df):
+    # link & posting time for the jobs columns are not important for our analysis so we will drop them
+    df.drop('link', axis=1, inplace=True) 
+    df.drop('posting_time', axis=1, inplace=True) 
 
 
-# Out of 16481 entries 15355 are duplicates, there were lot of duplicate values 
-#looks like the company posted for the same profile many times after a gap of few days   
-print('Length of Duplicated rows', len(df[df.duplicated()]))
+    # Out of 16481 entries 15355 are duplicates, there were lot of duplicate values 
+    #looks like the company posted for the same profile many times after a gap of few days   
+    print('Length of Duplicated rows', len(df[df.duplicated()]))
 
-# we can store this information in the column 'posting frequency'
-# calculate posting frequency on the basis of company
-freq = df[df.duplicated()]['Company'].value_counts()
+    # we can store this information in the column 'posting frequency'
+    # calculate posting frequency on the basis of company
+    freq = df[df.duplicated()]['Company'].value_counts()
 
-# remove duplicates 
-df.drop_duplicates(inplace=True)
+    # remove duplicates 
+    df.drop_duplicates(inplace=True)
 
-# fill the frequency calculated
-df['posting_frequency'] = df['Company'].map(freq)
+    # fill the frequency calculated
+    df['posting_frequency'] = df['Company'].map(freq)
 
-# those not repeated will be null, therefore fill them as 1
-df['posting_frequency'].fillna(1, inplace=True)
-
-
-print('\n\n lets take a look at an example before calculating frequency: \n')
-print(df[df['Company'] == 'BMC Software'])
-
-# We just deleted duplicates but we still see multiple entries for some companies
-# It looks like recently posted jobs with new tag are causing this, 
-# lets remove them
-df['Job_position'] = df['Job_position'].apply(lambda x: str(x).replace('\nnew',''))
-
-df.drop_duplicates(inplace=True)
-df.index = np.arange(0,len(df))
+    # those not repeated will be null, therefore fill them as 1
+    df['posting_frequency'].fillna(1, inplace=True)
 
 
-sns.heatmap(df.isnull(), cmap='viridis', cbar=False, yticklabels=False)
+    print('\n\n lets take a look at an example before calculating frequency: \n')
+    print(df[df['Company'] == 'BMC Software'])
 
-df['rating'] = df['rating'].fillna('na')
+    # We just deleted duplicates but we still see multiple entries for some companies
+    # It looks like recently posted jobs with new tag are causing this, 
+    # lets remove them
+    df['Job_position'] = df['Job_position'].apply(lambda x: str(x).replace('\nnew',''))
+
+    df.drop_duplicates(inplace=True)
+    df.index = np.arange(0,len(df))
+
+    return df
+
+df = clean_data(df)
+
+#sns.heatmap(df.isnull(), cmap='viridis', cbar=False, yticklabels=False)
 
 # removing new line character from ratings
 df['rating'] = df.rating.apply(lambda x: str(x).replace('\n',''))
 
 # filling missing values with a value far away from our distribution
-df['rating'].where(df['rating'] != 'na', 0, inplace=True)
+df['rating'] = df['rating'].replace({"na":'0'})
 df['rating'] = df['rating'].astype('float64')
+df['rating'] = df['rating'].fillna(0)
 
-
-df['Salary'].isnull().sum()
 
 # Rows with missing salaries contain valuable information regarding job position, location and their requirements
 # So we will keep them for now 
@@ -86,16 +87,11 @@ df['Salary'] = df['Salary'].apply(lambda x: str(x).replace('\n',''))
 df['Salary'] = df['Salary'].apply(lambda x: str(x).replace('₹',''))
 
 
-#df.to_csv(r'C:\Users\krish\Music\Job_ML_project\data\data_cleaned_check.csv', index = False)
-#print('\n\n File Saved !!')
 
 
 
 
 '''***Feature Engineering***'''
-
-
-
 
 # to calculate max and min Salary per annum
 def Salary(df):
@@ -244,8 +240,8 @@ def calc_experience(df):
                     df.loc[i, 'net_experience'] = -99 
 
 
-
     return df
+
 
 
 df = calc_experience(df)
@@ -511,49 +507,6 @@ df = df.loc[:, (df != df.iloc[0]).any()]
 print('\n Everything Fine :) \n \n')
 print(df)
 
-
-'''
-Now we are going to do 2 things:
-(i) We will calculate rating on the basis of income category and fill missing ratings where income category is present but rating is missing
-(ii) We will calculate the median of average yearly salaries on the basis of ratings and fill those entries where we have ratings but not salary
-
-Note:
-We calculate ratings before because we impute average year salary in the next step and dont want ratings to be calculated with imputed salaries but with orignal available salaries
-'''
-
-'''
-rating_freq = pd.pivot_table(df[(df['rating'] > 0) & (df['avg_yearly_sal'] != 0)], index='income_cat', values='rating')
-freq = df[(df['rating'] > 0) & (df['avg_yearly_sal'] != 0)].groupby('rating')['avg_yearly_sal'].median()
-
-
-x = df[(df['rating']>0) & (df['avg_yearly_sal'] == 0)]['rating'].map(freq)
-count=0
-for i in x.index:
-    df.loc[i, 'avg_yearly_sal'] = x.values[count]
-    count += 1
-df['avg_yearly_sal'] = df['avg_yearly_sal'].fillna(0)
-
-
-
-
-#Filling missing ratings on the basis of income_category
-for i in df[(df['rating'] == 0) & (df['avg_yearly_sal'] != 0)].index:
-    if df.loc[i, 'income_cat'] == 2:
-        df.loc[i, 'rating'] = 3.7
-    
-    if df.loc[i, 'income_cat'] == 3:
-        df.loc[i, 'rating'] = 3.88
-    
-    if df.loc[i, 'income_cat'] == 4:
-        df.loc[i, 'rating'] = 3.4
-        
-    if df.loc[i, 'income_cat'] == 5:
-        df.loc[i, 'rating'] = 3.9
-    
-    if df.loc[i, 'income_cat'] == 6:
-        df.loc[i, 'rating'] = 4.4
-
-'''
 
 #We want to train our models on the available yearly salaries only, lets filter them out
 df = df[df['avg_yearly_sal'] > 0]
