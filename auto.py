@@ -6,17 +6,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from nltk.tokenize import word_tokenize
 import pickle
-from sklearn.model_selection import GridSearchCV
-from sklearn.metrics import mean_squared_error
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestRegressor, VotingRegressor
-from sklearn.neighbors import KNeighborsRegressor
-from sklearn.ensemble import GradientBoostingRegressor
-from sklearn.ensemble import ExtraTreesRegressor
-from xgboost import XGBRegressor
-from sklearn.tree import DecisionTreeRegressor
-from sklearn.linear_model import Lasso
-from sklearn.svm import SVR
 
 
 """ Data Cleaning  """
