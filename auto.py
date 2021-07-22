@@ -19,7 +19,7 @@ from sklearn.linear_model import Lasso
 from sklearn.svm import SVR
 
 
-''' Data Cleaning '''
+""" Data Cleaning  """
 
 # data collected was saved in a csv file
 
@@ -66,6 +66,7 @@ df = clean_data(df)
 
 #sns.heatmap(df.isnull(), cmap='viridis', cbar=False, yticklabels=False)
 
+
 # removing new line character from ratings
 df['rating'] = df.rating.apply(lambda x: str(x).replace('\n',''))
 
@@ -75,9 +76,11 @@ df['rating'] = df['rating'].astype('float64')
 df['rating'] = df['rating'].fillna(0)
 
 
-# Rows with missing salaries contain valuable information regarding job position, location and their requirements
-# So we will keep them for now 
-# for now lets fill them with -999
+"""
+     Rows with missing salaries contain valuable information regarding job position, location and their requirements
+     So we will keep them for now 
+     for now lets fill them with -999
+"""
 df['Salary'].fillna('-999', inplace=True)
 
 # remove new line and ruppes symbol  
@@ -89,7 +92,7 @@ df['Salary'] = df['Salary'].apply(lambda x: str(x).replace('₹',''))
 
 
 
-'''***Feature Engineering***'''
+""" Feature Engineering """
 
 # to calculate max and min Salary per annum
 def Salary(df):
@@ -449,7 +452,8 @@ def analyze_skills(df):
     job_role_dict = calc_skill_freq(job_role)
 
     '''
-        Below we first pass all the elements of the first dictionary into the third one and then pass the second dictionary into the third. This will replace the duplicate keys of the first dictionary.
+        Below we first pass all the elements of the first dictionary into the third one and then pass the second dictionary into the third. 
+        This will replace the duplicate keys of the first dictionary.
         More info : (https://www.geeksforgeeks.org/python-merging-two-dictionaries/)
     '''
 
@@ -528,25 +532,21 @@ num_df['avg_yearly_sal'] = num_df['avg_yearly_sal'].apply(lambda x: np.log(x) if
 sns.displot(num_df['avg_yearly_sal'], kde=True)
 # Now our annual salary distribution is quite uniform
 
-# Lets do the train test split
-#  Note  : Here we are using train test split as dataset is quite small but if you have a much bigger dataset you might want to consider using stratified shuffle split.
-# In our case train test split gave better results compared to stratified shuffling
-
+""" 
+    Lets do the train test split
+    Note  : Here we are using train test split as dataset is quite small but if you have a much bigger dataset you might want to consider using stratified shuffle split.
+    In our case train test split gave better results compared to stratified shuffling
+"""
 
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(num_df.drop('avg_yearly_sal', axis=1), num_df['avg_yearly_sal'], test_size=100, random_state=42)
 
 
 from sklearn.ensemble import RandomForestRegressor, VotingRegressor
-
-
 rnd_reg = RandomForestRegressor(oob_score=True, random_state=42)
 rnd_reg.fit(X_train , y_train)
 
-
-
 col_names = num_df.drop('avg_yearly_sal', axis=1).columns
-
 
 # plot to see top 10 important features by random forest
 plt.figure(figsize=(8,15))
@@ -560,16 +560,13 @@ plt.show()
 
 
 cols = ['rating','net_experience', 'jr', 'senior', 'bachelor', 'masters', 'posting_frequency']
-
 X_train = X_train[cols]
-
 X_test = X_test[cols]
 
 
 
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import mean_squared_error
-
 
 # Lets tune our random forest for better performance
 param_grid = {'n_estimators' : [100, 300, 500]}
@@ -580,8 +577,8 @@ pred = rnd_best.predict(X_test)
 
 
 
-# Now we will train and fine tune many models namely Lasso regression, Decision tree, Random Forest, Extra trees, Gradient Boosted trees, Xgboost and then using Voting regressor on best performing models
-
+# Now we will train and fine tune many models namely Lasso regression, Decision tree, Random Forest, Extra trees, 
+# Gradient Boosted trees, Xgboost and then using Voting regressor on best performing models
 
 #SVR
 from sklearn.svm import SVR
@@ -644,9 +641,7 @@ pred = grb_reg.predict(X_test)
 
 # KNN
 from sklearn.neighbors import KNeighborsRegressor
-
 knn = KNeighborsRegressor()
-
 
 param_grid = {"n_neighbors"    : [3, 5, 9, 11] , "weights"        : [ 'uniform', 'distance' ], "metric"            : [ 'euclidean', 'manhattan']}
 
@@ -681,7 +676,8 @@ for model in selected_models:
     estimators.append((model.__class__.__name__, model))    
 
 
-# Now using Voting regressor to train on the best performing models so far, which averages the individual prediction to form a final prediction.
+# Now using Voting regressor to train on the best performing models so far, which averages the individual prediction to form a 
+# final prediction.
 vot_reg = VotingRegressor(estimators=estimators)
 
 vot_reg.fit(X_train, y_train)
