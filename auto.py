@@ -20,8 +20,7 @@ def clean_data(df):
     df.drop('posting_time', axis=1, inplace=True) 
 
 
-    # Out of 16481 entries 15355 are duplicates, there were lot of duplicate values 
-    #looks like the company posted for the same profile many times after a gap of few days   
+    #Some company posted for the same profile many times after a gap of few days   
     print('Length of Duplicated rows', len(df[df.duplicated()]))
 
     # we can store this information in the column 'posting frequency'
@@ -75,8 +74,6 @@ df['Salary'].fillna('-999', inplace=True)
 # remove new line and ruppes symbol  
 df['Salary'] = df['Salary'].apply(lambda x: str(x).replace('\n',''))
 df['Salary'] = df['Salary'].apply(lambda x: str(x).replace('₹',''))
-
-
 
 
 
@@ -157,9 +154,9 @@ def Salary(df):
     df = df.drop('Salary', axis=1)
 
     return df
-                
-df = Salary(df)
 
+
+df = Salary(df)
 print('Salary Calculated')
 
 
@@ -278,7 +275,6 @@ df['job_title'] = df['Job_position'].apply(seniority)
 '''
 
 df = pd.concat([df, pd.get_dummies(df['job_title'])], axis=1)
-
 
 
 
