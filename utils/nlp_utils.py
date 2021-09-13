@@ -4,13 +4,12 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import re
 from nltk.corpus import stopwords
-from nltk.stem.porter import PorterStemmer
 from nltk.stem import WordNetLemmatizer
 import nltk
 nltk.download('stopwords')
 nltk.download('punkt')
 nltk.download('wordnet')
-
+lemmatizer = WordNetLemmatizer()
 
 class Word2VecVectorizer:
   def __init__(self, model):
@@ -100,7 +99,7 @@ def preprocess_text(text):
       review = re.sub('[^a-zA-Z]', ' ', i)
       review = review.lower()
       review = review.split()
-      review = [word for word in review if not word in set(stopwords.words('english'))]
-      review = ' '.join(review)
+      review = ' '.join([word for word in review if not word in set(stopwords.words('english'))])
+      review = ' '.join([lemmatizer.lemmatize(w) for w in review])
       corpus.append(review)
   return corpus

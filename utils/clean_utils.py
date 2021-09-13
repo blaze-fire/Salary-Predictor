@@ -1,12 +1,61 @@
 import pandas as pd
 import numpy as np
 from nltk.tokenize import word_tokenize
+import nltk
+nltk.download('punkt')
 
-df = pd.read_csv(r'C:\Users\krish\Music\Job_ML_project\data\data_cleaned.csv')
+def clean_data(df):
+    # link & posting time for the jobs columns are not important for our analysis so we will drop them
+    df.drop('link', axis=1, inplace=True) 
+    df.drop('posting_time', axis=1, inplace=True) 
+
+
+    #Some company posted for the same profile many times after a gap of few days   
+    # we can store this information in the column 'posting frequency'
+    # calculate posting frequency on the basis of company
+    freq = df[df.duplicated()]['Company'].value_counts()
+
+    df.drop_duplicates(inplace=True)
+
+    df['posting_frequency'] = df['Company'].map(freq)
+
+    # those not repeated will be null, therefore fill them as 1
+    df['posting_frequency'].fillna(1, inplace=True)
+
+    # We just deleted duplicates but we still see multiple entries for some companies
+    # It looks like recently posted jobs with new tag are causing this, 
+    # lets remove them
+    df['Job_position'] = df['Job_position'].apply(lambda x: str(x).replace('\nnew',''))
+
+    df.drop_duplicates(inplace=True)
+    df.index = np.arange(0,len(df))
+
+
+    df['rating'] = df.rating.apply(lambda x: str(x).replace('\n',''))
+    df['rating'] = df['rating'].replace({"na":'0'})
+    df['rating'] = df['rating'].astype('float64')
+    df['rating'] = df['rating'].fillna(0)
+
+
+    """
+     Rows with missing salaries contain valuable information regarding job position, location and their requirements
+     So we will keep them for now 
+     for now lets fill them with -999
+    """
+    df['Salary'].fillna('-999', inplace=True)
+
+    # remove new line and ruppes symbol  
+    df['Salary'] = df['Salary'].apply(lambda x: str(x).replace('\n',''))
+    df['Salary'] = df['Salary'].apply(lambda x: str(x).replace('₹',''))
+
+    return df
+
+
+
 
 
 # to calculate max and min Salary per annum
-def Salary(df):
+def calc_salary(df):
     
     yearly_min = {}
     yearly_max = {}
@@ -46,17 +95,17 @@ def Salary(df):
                 
         
         if 'an hour' in df['Salary'][i]:
-            sal_min = df['Salary'][i].split('-')[0].replace('an hour','').replace(',','')
-            yearly_min[i] = int(sal_min) * 9 * 22 * 12
+            sal_min = df['Salary'][i].split('-')[0].replace('an hour','').replace(',','').replace(' ','')
+            yearly_min[i] = float(sal_min) * 9 * 22 * 12
             
             try:
-                sal_max = df['Salary'][i].split('-')[1].replace('an hour','').replace(',','')
-                yearly_max[i] = int(sal_max) * 9 * 22 * 12  
+                sal_max = df['Salary'][i].split('-')[1].replace('an hour','').replace(',','').replace(' ','')
+                yearly_max[i] = float(sal_max) * 9 * 22 * 12  
                 
             # if only single value present will be stored in both max and min, so the average comes accuate
             except:
-                sal_max = df['Salary'][i].split('-')[0].replace('an hour','').replace(',','')
-                yearly_max[i] = int(sal_max) * 9 * 22 * 12
+                sal_max = df['Salary'][i].split('-')[0].replace('an hour','').replace(',','').replace(' ','')
+                yearly_max[i] = float(sal_max) * 9 * 22 * 12
     
     # min, max and avg Salary columns
     df['min_Salary'] = pd.DataFrame(yearly_min.values(), index= yearly_min.keys())
@@ -80,9 +129,9 @@ def Salary(df):
 
     return df
                 
-df = Salary(df)
 
-print('Salary Calculated')
+
+
 
 def calc_experience(df):
     #Experience is mentioned in both requirements and experience so we will collect them all and save it in a column of experience
@@ -151,13 +200,10 @@ def calc_experience(df):
                     df.loc[i, 'net_experience'] = -99 
 
 
-
     return df
 
 
-df = calc_experience(df)
 
-print('Experience Calculated')
 
 
 #Educational criteria mentioned by these companies can also be useful
@@ -178,27 +224,27 @@ def education(df):
 
     return df
 
-df = education(df)
 
-#Seniority of these job positions cal also be useful
-def seniority(title):
-    title = str(title) 
-    if 'ii' in title.lower().split() or 'director' in title.lower().split() or 'specialist' in title.lower().split() or 'professional' in title.lower().split() or 'sr.' in title.lower().split() or 'senior' in title.lower().split():
-        return 'senior'
-    elif 'i' in title.lower().split() or 'associate' in title.lower().split() or 'junior' in title.lower().split() or 'jr' in title.lower().split()  or 'jr.' in title.lower().split() or 'trainee' in title.lower().split() or 'intern' in title.lower().split() or 'jr.' in title.lower().split():
-        return 'jr'
-    else:
-        return 'na'
+def senior(df):
+    def seniority(title):
+        title = str(title) 
+        if 'ii' in title.lower().split() or 'director' in title.lower().split() or 'specialist' in title.lower().split() or 'professional' in title.lower().split() or 'sr.' in title.lower().split() or 'senior' in title.lower().split():
+            return 'senior'
+        elif 'i' in title.lower().split() or 'associate' in title.lower().split() or 'junior' in title.lower().split() or 'jr' in title.lower().split()  or 'jr.' in title.lower().split() or 'trainee' in title.lower().split() or 'intern' in title.lower().split() or 'jr.' in title.lower().split():
+            return 'jr'
+        else:
+            return 'na'
+    # to calculate the seniority of the position applying for
+    df['job_title'] = df['Job_position'].apply(seniority)
 
-# to calculate the seniority of the position applying for
-df['job_title'] = df['Job_position'].apply(seniority)
+    '''
+        For encoding rank transforamtion, label encoding, frequency encoding were applied but they had very weak correlation with avg_year_Salary
+        as the categories of seniority is only jr, senior or na, we can one hot encode them
+    '''
 
-'''
-    For encoding rank transforamtion, label encoding, frequency encoding were applied but they had very weak correlation with avg_year_Salary
-    as the categories of seniority is only jr, senior or na, we can one hot encode them
-'''
+    df = pd.concat([df, pd.get_dummies(df['job_title'])], axis=1)
 
-df = pd.concat([df, pd.get_dummies(df['job_title'])], axis=1)
+    return df
 
 
 
@@ -232,13 +278,22 @@ def profession(df):
     
     return df
 
-df = profession(df)
 
-# we can split the location column and get the state 
-df['State'] = df['Location'].apply(lambda x:  x.split(',')[1] if len(x.split(',')) > 1 else x)
 
-#We can one hot encode these States values
-df = pd.concat([df, pd.get_dummies(df['State'])], axis=1)
+
+
+def one_hot_encode_cols(df):
+    # we can split the location column and get the state 
+    df['State'] = df['Location'].apply(lambda x:  x.split(',')[1] if len(x.split(',')) > 1 else x)
+
+    #We can one hot encode these States values
+    df = pd.concat([df, pd.get_dummies(df['State'])], axis=1)
+    df['requirements'] = df['requirements'].fillna('')
+    df['job_descr_len'] = df['requirements'].apply(lambda x: 0 if not x else len(x))
+
+    return df
+
+
 
 # Some companies have multiple job openings this could be useful
 def job_openings(df):
@@ -246,19 +301,12 @@ def job_openings(df):
     df['job_openings'] = df['Company'].map(job_openings)
     return df
 
-df = job_openings(df)
-
-df['requirements'] = df['requirements'].fillna('')
-df['job_descr_len'] = df['requirements'].apply(lambda x: 0 if not x else len(x))
-
 
 '''
     Analyzing Job skills
         As due to covid-19 many people working in the industry have lost their jobs, and according to news articles the
         skill demand for job industry is also changing, lets take a look at the skills, in demand in the job industry
 '''
-
-print('Job openings, profession, seniority, education Calculated')
 
 def analyze_skills(df):
     requirements = df['requirements']
@@ -273,11 +321,13 @@ def analyze_skills(df):
                 x.replace('.',' ')
                 job_descr.append(x)
 
+
     # Remove punctuation and convert to lower case
     for x in range(0,len(job_descr)):
         for p in ['.', '-', ')', '(', '…', ',', ':', "'"]:
             job_descr[x] = job_descr[x].replace(p,' ')
         job_descr[x] = job_descr[x].lower()
+
 
     # analyzing keywords from custom keyword list
     f = open("./utils/skills.txt","r",) 
@@ -360,7 +410,8 @@ def analyze_skills(df):
     job_role_dict = calc_skill_freq(job_role)
 
     '''
-        Below we first pass all the elements of the first dictionary into the third one and then pass the second dictionary into the third. This will replace the duplicate keys of the first dictionary.
+        Below we first pass all the elements of the first dictionary into the third one and then pass the second dictionary into the third. 
+        This will replace the duplicate keys of the first dictionary.
         More info : (https://www.geeksforgeeks.org/python-merging-two-dictionaries/)
     '''
 
@@ -398,29 +449,17 @@ def analyze_skills(df):
                 df[key] = df[key].fillna(0)
         return df
     df = calc_freq(df)
+    
+    '''
+    As skills from job position and description were added its possible some of them dont appear in description, 
+    their frequency wiil be zero so we must drop them
+    '''
+
+    # remove columns with constant values
+    df = df.loc[:, (df != df.iloc[0]).any()] 
 
     return df
 
-df = analyze_skills(df)
 
-print('Skills Calculated')
-
-'''
-    As skills from job position and description were added its possible some of them dont appear in description, 
-    their frequency wiil be zero so we must drop them
-'''
-
-# remove columns with constant values
-df = df.loc[:, (df != df.iloc[0]).any()] 
-
-print('\n Everything Fine :) \n \n')
-print(df)
-
-
-df.to_csv(r'C:\Users\krish\Music\Job_ML_project\data\data_prepared.csv', index=False)
-
-
-    
-    
 
             

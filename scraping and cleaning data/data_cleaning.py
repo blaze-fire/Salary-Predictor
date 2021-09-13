@@ -13,64 +13,54 @@ import seaborn as sns
 
 df = pd.read_csv(r'C:\Users\krish\Music\Job_ML_project\data\raw_data.csv')
 
-# link & posting time for the jobs columns are not important for our analysis so we will drop them
-df.drop('link', axis=1, inplace=True) 
-df.drop('posting_time', axis=1, inplace=True) 
+def clean_data(df):
+    # link & posting time for the jobs columns are not important for our analysis so we will drop them
+    df.drop('link', axis=1, inplace=True) 
+    df.drop('posting_time', axis=1, inplace=True) 
 
 
-# Out of 16481 entries 15355 are duplicates, there were lot of duplicate values 
-#looks like the company posted for the same profile many times after a gap of few days   
-print('Length of Duplicated rows', len(df[df.duplicated()]))
+    #Some company posted for the same profile many times after a gap of few days   
+    # we can store this information in the column 'posting frequency'
+    # calculate posting frequency on the basis of company
+    freq = df[df.duplicated()]['Company'].value_counts()
 
-# we can store this information in the column 'posting frequency'
-# calculate posting frequency on the basis of company
-freq = df[df.duplicated()]['Company'].value_counts()
+    df.drop_duplicates(inplace=True)
 
-# remove duplicates 
-df.drop_duplicates(inplace=True)
+    df['posting_frequency'] = df['Company'].map(freq)
 
-# fill the frequency calculated
-df['posting_frequency'] = df['Company'].map(freq)
+    # those not repeated will be null, therefore fill them as 1
+    df['posting_frequency'].fillna(1, inplace=True)
 
-# those not repeated will be null, therefore fill them as 1
-df['posting_frequency'].fillna(1, inplace=True)
+    # We just deleted duplicates but we still see multiple entries for some companies
+    # It looks like recently posted jobs with new tag are causing this, 
+    # lets remove them
+    df['Job_position'] = df['Job_position'].apply(lambda x: str(x).replace('\nnew',''))
 
-
-print('\n\n lets take a look at an example before calculating frequency: \n')
-print(df[df['Company'] == 'BMC Software'])
-
-# We just deleted duplicates but we still see multiple entries for some companies
-# It looks like recently posted jobs with new tag are causing this, 
-# lets remove them
-df['Job_position'] = df['Job_position'].apply(lambda x: str(x).replace('\nnew',''))
-
-df.drop_duplicates(inplace=True)
-df.index = np.arange(0,len(df))
+    df.drop_duplicates(inplace=True)
+    df.index = np.arange(0,len(df))
 
 
-sns.heatmap(df.isnull(), cmap='viridis', cbar=False, yticklabels=False)
-
-df['rating'] = df['rating'].fillna('na')
-
-# removing new line character from ratings
-df['rating'] = df.rating.apply(lambda x: str(x).replace('\n',''))
-
-# filling missing values with a value far away from our distribution
-df['rating'].where(df['rating'] != 'na', 0, inplace=True)
-df['rating'] = df['rating'].astype('float64')
+    df['rating'] = df.rating.apply(lambda x: str(x).replace('\n',''))
+    df['rating'] = df['rating'].replace({"na":'0'})
+    df['rating'] = df['rating'].astype('float64')
+    df['rating'] = df['rating'].fillna(0)
 
 
-df['Salary'].isnull().sum()
+    """
+     Rows with missing salaries contain valuable information regarding job position, location and their requirements
+     So we will keep them for now 
+     for now lets fill them with -999
+    """
+    df['Salary'].fillna('-999', inplace=True)
 
-# Rows with missing salaries contain valuable information regarding job position, location and their requirements
-# So we will keep them for now 
-# for now lets fill them with -999
-df['Salary'].fillna('-999', inplace=True)
+    # remove new line and ruppes symbol  
+    df['Salary'] = df['Salary'].apply(lambda x: str(x).replace('\n',''))
+    df['Salary'] = df['Salary'].apply(lambda x: str(x).replace('₹',''))
 
-# remove new line and ruppes symbol  
-df['Salary'] = df['Salary'].apply(lambda x: str(x).replace('\n',''))
-df['Salary'] = df['Salary'].apply(lambda x: str(x).replace('₹',''))
+    return df
+
+df = clean_data(df)
 
 
-df.to_csv(r'C:\Users\krish\Music\Job_ML_project\data\data_cleaned.csv', index = False)
-print('\n\n File Saved !!')
+#df.to_csv(r'C:\Users\krish\Music\Job_ML_project\data\data_cleaned.csv', index = False)
+#print('\n\n File Saved !!')
