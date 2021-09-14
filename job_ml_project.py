@@ -550,7 +550,7 @@ class Preprocess_final:
 
     def get_states(self, df):
 
-        with open('states.txt', 'r') as f:
+        with open('utils/states.txt', 'r') as f:
             states = f.read()
             states_list = states.split(',')
         f.close()
@@ -587,7 +587,7 @@ class Preprocess_final:
 
     def city(self, df):
 
-        with open('cities.txt', 'r') as f:
+        with open('utils/cities.txt', 'r') as f:
             cities = f.read()
             cities_list = cities.split(',')
         f.close()
@@ -613,7 +613,7 @@ class Preprocess_final:
 
     
     def analyze_skills(self, df):
-        key_df = pd.read_csv('keywords.csv')
+        key_df = pd.read_csv('utils/keywords.csv')
         
         key_df.fillna('na', inplace=True)
         
@@ -709,7 +709,7 @@ from utils.nlp_utils import Word2VecVectorizer
 
 from gensim.models import KeyedVectors
 # load GloVe model
-filename = 'utils/word2vec_model.bin'
+filename = 'word2vec_50d.bin'
 model = KeyedVectors.load_word2vec_format(filename, binary=True)
 
 
@@ -1298,6 +1298,7 @@ xgr.fit(train_ans, y_train)
 #xgr_best = grid.best_estimator_
 pred = xgr.predict(test_ans)
 
+from sklearn.metrics import mean_squared_error
 np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
 
 from xgboost import XGBRegressor
@@ -1313,6 +1314,5 @@ xgr.fit(train_ans, y)
 import pickle 
 filename = 'xgb_model.sav'
 pickle.dump(xgr, open(filename, 'wb'))
-
 
 
