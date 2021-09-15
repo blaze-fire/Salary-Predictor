@@ -1,49 +1,96 @@
 <!DOCTYPE html>
 <html>
-<!--From https://codepen.io/frytyler/pen/EGdtg-->
+  <!--From https://codepen.io/frytyler/pen/EGdtg-->
 
-<head>
-  <meta charset="UTF-8">
-  <title>ML API</title>
-  <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
-  <link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
-  <link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
-  <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+  <head>
+    <meta charset="UTF-8" />
+    <title>ML API</title>
+    <link
+      href="https://fonts.googleapis.com/css?family=Pacifico"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Arimo"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Hind:300"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300"
+      rel="stylesheet"
+      type="text/css"
+    />
+  </head>
 
-</head>
-
-<body>
-  <div class="login">
-    <h1>Salary Prediction</h1>
-    <h3>Pls fill integers as input <br> </h3>
-    <pre> 
-        Rating            : Any integer (0 - 5)         <br> 
-        Net Experience    : Any positive integer        <br>
-        Junior            : 1 if junior position else 0 <br>
-        Senior            : 1 if senior position else 0 <br>
-        Bachelor          : 1 if senior position else 0 <br>
-        Masters           : 1 if senior position else 0 <br>
-        Posting Frequency : Any positive integer <br>
+  <body>
+    <div class="login">
+      <h1>Salary Prediction</h1>
+      <h3>Pls fill integers as input <br /></h3>
+      <pre> 
+        Job position      : text field                                                             <br>
+        Company           : text field                                                             <br>
+        Location          : text field                                                             <br>
+        Requirements      : text field                                                             <br>
+        Rating            : Any integer (0 - 5)                                                    <br> 
+        Net Experience    : Any positive integer                                                   <br>
+        Posting Frequency (Number of times you saw the ad on various sites) : Any positive integer <br>
     </pre>
-    <!-- Main Input For Receiving Query to our ML -->
-    <form action="{{ url_for('predict')}}" method="post">
-      <input type="text" name="rating " placeholder="Rating(0-5)" required="required" />
-      <input type="text" name="net_experience" placeholder="Net Experience" required="required" />
-      <input type="text" name="jr" placeholder="Junior" required="required" />
-      <input type="text" name="senior" placeholder="Senior" required="required" />
-      <input type="text" name="bachelor" placeholder="Bachelor" required="required" />
-      <input type="text" name="masters" placeholder="Masters" required="required" />
-      <input type="text" name="posting_frequency" placeholder="Posting Frequency" required="required" />
+      <!-- Main Input For Receiving Query to our ML -->
+      <form action="{{ url_for('predict')}}" method="post">
+        <input
+          type="text"
+          name="Job_position"
+          placeholder="Job Position"
+          required="required"
+        />
+        <input
+          type="text"
+          name="Company"
+          placeholder="Company Name"
+          required="required"
+        />
+        <input
+          type="text"
+          name="Location"
+          placeholder="Location"
+          required="required"
+        />
+        <input
+          type="text"
+          name="requirements"
+          placeholder="Job Requirements"
+          required="required"
+        />
+        <input
+          type="text"
+          name="rating"
+          placeholder="Rating(0-5)"
+        />
+        <input
+          type="text"
+          name="experience"
+          placeholder="Experience"
+        />
+        <input
+          type="text"
+          name="posting_frequency"
+          placeholder="Job Posting Frequency"
+          required="required"
+        />
 
-      <button type="submit" class="btn btn-primary btn-block btn-large">Predict</button>
-    </form>
+        <button type="submit" class="btn btn-primary btn-block btn-large">
+          Predict
+        </button>
+      </form>
 
-    <br>
-    <br>
-    {{ prediction_text }}
-
-  </div>
-
-</body>
-
+      <br />
+      <br />
+      {{ prediction_text }}
+    </div>
+  </body>
 </html>
