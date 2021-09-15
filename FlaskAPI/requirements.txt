@@ -6,6 +6,8 @@ MarkupSafe==1.1.1
 Werkzeug==0.15.5
 numpy==1.19.5
 scikit-learn==0.24.2
-pandas==1.2.4
-nltk==3.6.2
-regex==2.2.1
+pandas
+nltk
+regex
+gensim==4.0.1
+xgboost==1.4.2
