@@ -45,9 +45,8 @@ from utils.nlp_utils import Word2VecVectorizer
 from gensim.models import KeyedVectors
 
 # load GloVe model
-filename = 'FlaskAPI/utils/word2vec_50d.bin'
-model = KeyedVectors.load_word2vec_format(filename, binary=True)
-
+filename = 'utils/glove_50d.gs'
+model = KeyedVectors.load(filename, mmap='r')
 
 rating_train = train_set.select_dtypes(exclude='object').values
 rating_test = test_set.select_dtypes(exclude='object').values
@@ -126,33 +125,23 @@ def glove_embedded(X_train, col, X_test, experience_train, experience_test):
 for col in test_set.select_dtypes(include='object').columns:
   experience_train, experience_test = glove_embedded(train_set, col, test_set, experience_train, experience_test)
 
+
 #will use xgboost to predict missing values
-
-from xgboost import XGBRegressor
-
 experience_model = XGBRegressor(objective= 'reg:squarederror', random_state=42)
-
 experience_model.fit(experience_train, y_train)
+
 
 #import pickle 
 #filename = 'experience_model.sav'
 #pickle.dump(experience_model, open(filename, 'wb'))
 
 test_experience = experience_model.predict(experience_test)
-
 test['net_experience'] = np.round(test_experience, 2)
 
-temp = pd.DataFrame(columns=test.columns)
 
-for idx in range(len(temp_df)):
-  if idx in train_indices:
-    temp = temp.append(train.loc[idx])
-  elif idx in test_indices:
-    temp = temp.append(test.loc[idx])
+temp = pd.concat([train, test], axis=0).sort_index()
 
 final_df['net_experience'] = temp['net_experience']
-
-
 
 
 
@@ -187,7 +176,6 @@ for col in temp_df.select_dtypes(exclude = 'object').columns:
 
 final_df = final_df[(~final_df['avg_yearly_sal'].isnull()) & (final_df['avg_yearly_sal'] > 0)]
 
-
 final_df['avg_yearly_sal'] = final_df['avg_yearly_sal'].apply(lambda x: np.log(x))
 
 plot_data(final_df['avg_yearly_sal'])
@@ -204,9 +192,6 @@ X_test.reset_index(drop=True, inplace=True)
 
 #here we will apply glove embeddings on all text columns and concatenate them and them concatenate them along with numerical columns
 "***Glove Embeddings***"
-from gensim.models import KeyedVectors
-# load GloVe model
-model = KeyedVectors.load_word2vec_format(filename, binary=True)
 
 
 train_ans = X_train.select_dtypes(exclude='object').values
@@ -231,8 +216,6 @@ for col in X_test.select_dtypes(include='object').columns:
 
 
 "***To train on entire dataset***"
-model = KeyedVectors.load_word2vec_format(filename, binary=True)
-
 train_ans = X.select_dtypes(exclude='object').values
 
 def glove_embedded(X, col,train_ans):
@@ -258,8 +241,6 @@ for col in X.select_dtypes(include='object').columns:
 from sklearn.metrics import mean_squared_error
 
 #XGBoost
-from xgboost import XGBRegressor
-
 xgr = XGBRegressor(learning_rate = 0.1, max_depth = 5, random_state=42, objective = 'reg:squarederror', n_estimators = 800)
 xgr.fit(train_ans, y_train)
 pred = xgr.predict(test_ans)
@@ -275,5 +256,7 @@ xgr.fit(train_ans, y)
 #import pickle 
 #filename = 'xgb_model.sav'
 #pickle.dump(xgr, open(filename, 'wb'))
+
+
 
 

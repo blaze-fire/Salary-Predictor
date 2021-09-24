@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, render_template
+from flask import Flask, request, render_template
 import numpy as np
 import pickle
 import pandas as pd
@@ -10,9 +10,9 @@ app = Flask(__name__)
 
 
 #load glove embeddings
-filename = 'utils/word2vec_50d.bin'
+filename = 'utils/glove_50d.gs'
 
-model = KeyedVectors.load_word2vec_format(filename, binary=True)
+model = KeyedVectors.load(filename, mmap='r')
 
 def glove_embedded(X, col,train_data):
   vectorizer = Word2VecVectorizer(model)
