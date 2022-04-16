@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from utils.clean_utils import PreprocessOld, PreprocessNew
 
+<<<<<<< HEAD
 old_df = pd.read_csv('data/raw_data.csv')
 old_df = PreprocessOld()(old_df)
 
@@ -16,6 +17,17 @@ final_df = pd.DataFrame()
 for col in old_df.columns:
     temp_df = pd.concat([new_df[col], old_df[col]], axis=0)
     final_df = pd.concat([final_df, temp_df], axis=1)
+=======
+old_df = pd.read_csv('data/old_data.csv')
+old_df = PreprocessOld()(old_df)
+
+
+new_df = pd.read_csv('data/new_data.csv', names=['Job_position', 'Company', 'Salary', 'requirements', 'rating'])
+new_df = PreprocessNew()(new_df)
+
+
+final_df = pd.concat([old_df, new_df], axis=0)
+>>>>>>> 3395f1bf1858e995113830fa960ffba82da040e0
 
 
 from sklearn.utils import shuffle
