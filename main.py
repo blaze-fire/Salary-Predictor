@@ -11,11 +11,11 @@ import pandas as pd
 import numpy as np
 from utils.clean_utils import PreprocessOld, PreprocessNew
 
-raw_df = pd.read_csv('data/drive_data/raw_data(1).csv')
+raw_df = pd.read_csv('data/raw_data.csv')
 raw_df = PreprocessOld()(raw_df)
 
 
-another_df = pd.read_csv('data/drive_data/final.csv')
+another_df = pd.read_csv('data/final.csv')
 another_df = PreprocessNew()(another_df)
 
 
