@@ -3,15 +3,19 @@ import pandas as pd
 import numpy as np
 from utils.clean_utils import PreprocessOld, PreprocessNew
 
-raw_df = pd.read_csv('data/raw_data.csv')
-raw_df = PreprocessOld()(raw_df)
+old_df = pd.read_csv('data/raw_data.csv')
+old_df = PreprocessOld()(old_df)
 
 
-another_df = pd.read_csv('data/final.csv')
-another_df = PreprocessNew()(another_df)
+new_df = pd.read_csv('data/final.csv')
+new_df = PreprocessNew()(new_df)
 
 
-final_df = pd.concat([raw_df, another_df], axis=0)
+final_df = pd.DataFrame()
+
+for col in old_df.columns:
+    temp_df = pd.concat([new_df[col], old_df[col]], axis=0)
+    final_df = pd.concat([final_df, temp_df], axis=1)
 
 
 from sklearn.utils import shuffle

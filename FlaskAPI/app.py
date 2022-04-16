@@ -23,7 +23,7 @@ def glove_embedded(X, col,train_data):
 
 
 #load model
-xgb_model = pickle.load(open('models/xgb_model.sav', 'rb'))
+xgb_model = pickle.load(open('models/xgb_word2vec.sav', 'rb'))
 
 @app.route('/')
 def home():
