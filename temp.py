@@ -4,7 +4,7 @@ import numpy as np
 from utils.temp_clean_utils import PreprocessOld, PreprocessNew
 
 
-raw_df = pd.read_csv('data/old data/raw_data.csv')
+raw_df = pd.read_csv('data/raw_data.csv')
 len(raw_df)
 
 raw_df = raw_df.iloc[:2000]
