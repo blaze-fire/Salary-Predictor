@@ -3,3 +3,6 @@ temp.ipynb
 FlaskAPI/utils/__pycache__
 .spyproject
 data/.directory
+scraping_and_cleaning_data/__pycache__
+utils/temp_clean_utils.py
+temp.py
