@@ -4,9 +4,9 @@ import re
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 import nltk
-nltk.download('stopwords')
-nltk.download('punkt')
-nltk.download('wordnet')
+# nltk.download('stopwords')
+# nltk.download('punkt')
+# nltk.download('wordnet')
 lemmatizer = WordNetLemmatizer()
 
 
@@ -39,7 +39,7 @@ class PreprocessOld:
         # lets remove them
         df['Job_position'] = df['Job_position'].apply(lambda x: str(x).replace('\nnew','').lower())
 
-
+        df.replace('na', np.nan, inplace=True)
         df['rating'] = df['rating'].astype('float')
 
 

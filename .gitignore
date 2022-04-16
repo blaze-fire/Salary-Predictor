@@ -1,0 +1,5 @@
+temp.ipynb
+.ipynb_checkpoints
+FlaskAPI/utils/__pycache__
+.spyproject
+data/.directory
