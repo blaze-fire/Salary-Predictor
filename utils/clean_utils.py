@@ -39,7 +39,7 @@ class PreprocessOld:
         # lets remove them
         df['Job_position'] = df['Job_position'].apply(lambda x: str(x).replace('\nnew','').lower())
 
-
+        df.replace('na', np.nan, inplace=True)
         df['rating'] = df['rating'].astype('float')
 
 
