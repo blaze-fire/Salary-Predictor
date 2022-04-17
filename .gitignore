@@ -1,8 +1,7 @@
-temp.ipynb
 .ipynb_checkpoints
 FlaskAPI/utils/__pycache__
 .spyproject
 data/.directory
-scraping_and_cleaning_data/__pycache__
-utils/temp_clean_utils.py
+model_building
 temp.py
+utils/temp_clean_utils.py
