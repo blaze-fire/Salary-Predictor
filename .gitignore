@@ -4,3 +4,4 @@ FlaskAPI/utils/__pycache__
 data/.directory
 model_building
 temp.py
+utils/temp_clean_utils.py
