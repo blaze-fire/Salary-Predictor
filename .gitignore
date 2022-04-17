@@ -2,6 +2,3 @@
 FlaskAPI/utils/__pycache__
 .spyproject
 data/.directory
-model_building
-temp.py
-utils/temp_clean_utils.py
