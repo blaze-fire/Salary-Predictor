@@ -310,7 +310,7 @@ class PreprocessOld:
         df = self.seniority(df)
         df = self.get_states(df)
         df = self.city(df)
-        df = self.analyze_skills(df)
+        #df = self.analyze_skills(df)
         df = self.final_operations(df)
         return df
     
@@ -622,6 +622,6 @@ class PreprocessNew:
         df = self.get_states(df)
         df = self.replace_comp(df)
         df = self.city(df)
-        df = self.analyze_skills(df)
+        #df = self.analyze_skills(df)
         df = self.final_operations(df)
         return df
