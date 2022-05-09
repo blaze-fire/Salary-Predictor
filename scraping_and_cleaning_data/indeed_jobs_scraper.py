@@ -35,7 +35,7 @@ def find_jobs_from():
 
 def save_jobs_to_excel(jobs_list):
     jobs = pd.DataFrame(jobs_list)
-    jobs.to_csv('./data/final.csv', mode = 'a', index = False, header = None, encoding='utf-8-sig')
+    jobs.to_csv('./data/temp.csv', mode = 'a', index = False, header = None, encoding='utf-8-sig')
 
 
 
