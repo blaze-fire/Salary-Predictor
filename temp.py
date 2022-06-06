@@ -7,14 +7,14 @@ from utils.temp_clean_utils import PreprocessOld, PreprocessNew
 raw_df = pd.read_csv('data/raw_data.csv')
 len(raw_df)
 
-raw_df = raw_df.iloc[:2000]
+raw_df = raw_df.iloc[:200]
 
 
 raw_df = PreprocessOld()(raw_df)
 
 check_df = pd.read_csv('data/final.csv', names=['Job_position', 'Company', 'Salary', 'requirements', 'rating'])
 
-check_df = PreprocessNew()(check_df)
+check_df = PreprocessNew()(check_df[:200])
 
 #another_df = pd.read_csv('data/drive_data/final.csv')
 #another_df = PreprocessNew()(another_df)

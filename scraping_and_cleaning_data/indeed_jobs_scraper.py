@@ -21,7 +21,7 @@ def find_jobs_from():
            individually and then concatenate all the results. 
     """
     
-    for i in range(0,50001,30):                                                                 # to get results from other pages 
+    for i in range(1,50001,30):                                                                 # to get results from other pages
         
         job_soup = load_indeed_jobs_div(i)
         jobs_list, num_listings = extract_job_information_indeed(job_soup)
@@ -42,9 +42,9 @@ def save_jobs_to_excel(jobs_list):
 ## ================== FUNCTIONS FOR INDEED.CO.IN =================== ##
 
 def load_indeed_jobs_div(i):
-    #url = ('https://in.indeed.com/jobs?q=software+developer&fromage=last&start=' + str(i))
+    url = ('https://in.indeed.com/jobs?q=software&fromage=last&start=' + str(i))
 
-    url = ('https://in.indeed.com/jobs?q=machine+learning&l=india&start=' + str(i))
+    #url = ('https://in.indeed.com/jobs?q=machine+learning&l=india&start=' + str(i))
 
     #url = ('https://in.indeed.com/jobs?q=analyst&l=india&start=' + str(i))
     #url = ('https://in.indeed.com/jobs?q=IT&l=india&start=' + str(i))
