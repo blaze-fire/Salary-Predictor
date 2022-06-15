@@ -13,7 +13,7 @@ nltk.download('omw-1.4')
 lemmatizer = WordNetLemmatizer()
 
 
-class PreprocessOld:
+class Preprocess:
 
     def preprocess_text(self, text):
         text = text.lower()
@@ -24,19 +24,7 @@ class PreprocessOld:
         return text
     
     def clean_data(self, df):
-        #Some company posted for the same profile many times after a gap of few days   
-        # we can store this information in the column 'posting frequency'
-        # calculate posting frequency on the basis of company
-        freq = df['Company'].value_counts()
-
-        df.drop_duplicates(inplace=True)
-        df.reset_index(drop=True, inplace=True)
-
-        df['posting_frequency'] = df['Company'].map(freq)
-
-        # those not repeated will be null, therefore fill them as 1
-        df['posting_frequency'].fillna(1, inplace=True)
-
+       
         # We just deleted duplicates but we still see multiple entries for some companies
         # It looks like recently posted jobs with new tag are causing this, 
         # lets remove them
@@ -149,25 +137,6 @@ class PreprocessOld:
 
 
 
-    def calc_experience(self, df):
-        df['experience'].fillna('', inplace = True)
-
-        experience_list = []
-        for j in range(len(df)):
-
-            if re.findall(r'\d+ year', df['experience'][j]):
-                experience_list.append(re.search(r'\d+ year', df['experience'][j]).group()[0])
-
-            else:
-                experience_list.append('')
-
-        df['net_experience'] = experience_list
-        df['net_experience'] = pd.to_numeric(df['net_experience'])
-                
-        return df
-
-
-
     #Educational criteria mentioned by these companies can also be useful
     def education(self, df):
 
@@ -175,7 +144,7 @@ class PreprocessOld:
         education_dict = {'bachelor':1, 'master':2, 'graduate':3}
         for j in range(len(df)):
             
-            if re.findall(r'(graduate|bachelor|master)', df['experience'][j].lower()):
+            if re.findall(r'(graduate|bachelor|master)', str(df['experience'][j]).lower()):
                 education_list.append( education_dict[re.search(r'(graduate|bachelor|master)', df['experience'][j].lower()).group()] )
             
             elif re.findall(r'(graduate|bachelor|master)', df['requirements'][j].lower()):
@@ -223,7 +192,7 @@ class PreprocessOld:
             counter = 0
             
             for i in states_list:
-                if re.findall(i, df['Location'][j].lower()):
+                if re.findall(i, str(df['Location'][j]).lower()):
                     job_states.append(states_list.index(i))
                     counter = 1
                     break
@@ -251,7 +220,7 @@ class PreprocessOld:
             counter = 0
             
             for i in cities_list:
-                if re.findall(i, df['Location'][j].lower()):
+                if re.findall(i, str(df['Location'][j]).lower()):
                     job_cities.append(cities_list.index(i))
                     counter = 1
                     break
@@ -271,8 +240,10 @@ class PreprocessOld:
         df['Job_position'] = df['Job_position'].apply(lambda x: self.preprocess_text(str(x)))
         df['requirements'] = df['requirements'].fillna('')
         df['requirements'] = df['requirements'].apply(lambda x: self.preprocess_text(str(x)))
-        df['job_descr_len'] = df['requirements'].apply(lambda x: 0 if not x else len(x))
-        df.drop(['experience', 'Location', 'link', 'posting_time'], axis=1, inplace=True)
+        
+        df['experience'] = df['experience'].fillna('')
+        df['experience'] = df['experience'].apply(lambda x: self.preprocess_text(str(x)))
+        df.drop(['Location'], axis=1, inplace=True)
 
         df = df.loc[:, (df != df.iloc[0]).any()] 
 
@@ -282,7 +253,6 @@ class PreprocessOld:
         df = self.clean_data(df)
         df = self.calc_salary(df)
         df = self.work_location(df)
-        df = self.calc_experience(df)
         df = self.education(df)
         df = self.seniority(df)
         df = self.get_states(df)
@@ -305,18 +275,6 @@ class PreprocessNew:
         return text
     
     def clean_data(self, df):
-        #Some company posted for the same profile many times after a gap of few days   
-        # we can store this information in the column 'posting frequency'
-        # calculate posting frequency on the basis of company
-        freq = df['Company'].value_counts()
-
-        df.drop_duplicates(inplace=True)
-        df.reset_index(drop=True, inplace=True)
-
-        df['posting_frequency'] = df['Company'].map(freq)
-
-        # those not repeated will be null, therefore fill them as 1
-        df['posting_frequency'].fillna(1, inplace=True)
 
         # We just deleted duplicates but we still see multiple entries for some companies
         # It looks like recently posted jobs with new tag are causing this, 
@@ -437,13 +395,13 @@ class PreprocessNew:
         for j in range(len(df)):
 
             if re.findall(r'\d+ year', df['requirements'][j]):
-                experience_list.append(re.search(r'\d+ year', df['requirements'][j]).group()[0])
+                experience_list.append((re.search(r'\d+ year', df['requirements'][j]).group()[0] + 'years'))
 
             else:
                 experience_list.append('')
 
-        df['net_experience'] = experience_list
-        df['net_experience'] = pd.to_numeric(df['net_experience'])
+        df['experience'] = experience_list
+        # df['experience'] = pd.to_numeric(df['experience'])
 
         return df
 
@@ -559,7 +517,6 @@ class PreprocessNew:
         df['Job_position'] = df['Job_position'].apply(lambda x: self.preprocess_text(str(x)))
         df['requirements'] = df['requirements'].fillna('')
         df['requirements'] = df['requirements'].apply(lambda x: self.preprocess_text(str(x)))
-        df['job_descr_len'] = df['requirements'].apply(lambda x: 0 if not x else len(x))
 
         df = df.loc[:, (df != df.iloc[0]).any()] 
 

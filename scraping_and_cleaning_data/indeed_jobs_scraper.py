@@ -21,35 +21,37 @@ def find_jobs_from():
            individually and then concatenate all the results. 
     """
     
-    for i in range(1,50001,30):                                                                 # to get results from other pages
-        
-        job_soup = load_indeed_jobs_div(i)
-        jobs_list, num_listings = extract_job_information_indeed(job_soup)
-        print('{} new job postings retrieved saved      {}'.format(num_listings, i))            #to keep note of the page currently scraping
-        print('\n')
-        save_jobs_to_excel(jobs_list)
-        time.sleep(2)                                                                           # make sure to delay b/w scraping as the site might identify you as a bot and will block you :)
+    urls = [
+            'https://in.indeed.com/jobs?q=software&fromage=last&start=',
+            'https://in.indeed.com/jobs?q=machine+learning&l=india&start=',
+            'https://in.indeed.com/jobs?q=analyst&l=india&start=',
+            'https://in.indeed.com/jobs?q=IT&l=india&start=',
+            'https://in.indeed.com/jobs?q=developer&l=india&start='
+            ]
     
+    for url in urls:
+        print(url)
+        for i in range(1,1001,30):                                                                 # to get results from other pages
+            url = url + str(i)
+            job_soup = load_indeed_jobs_div(url)
+            jobs_list, num_listings = extract_job_information_indeed(job_soup)
+            print('{} new job postings retrieved saved      {}'.format(num_listings, i))            #to keep note of the page currently scraping
+            print('\n')
+            save_jobs_to_excel(jobs_list)
+            time.sleep(2)                                                                           # make sure to delay b/w scraping as the site might identify you as a bot and will block you :)
+        
 
 ## ======================= SAVE FILES IN CSV AND APPEND THEM AS SCRAPING ======================= ##
 
 def save_jobs_to_excel(jobs_list):
-    jobs = pd.DataFrame(jobs_list)
+    jobs = pd.DataFrame(jobs_list, columns=['Job_position', 'Company', 'Salary', 'requirements', 'rating'])
     jobs.to_csv('./data/temp.csv', mode = 'a', index = False, header = None, encoding='utf-8-sig')
 
 
 
 ## ================== FUNCTIONS FOR INDEED.CO.IN =================== ##
 
-def load_indeed_jobs_div(i):
-    url = ('https://in.indeed.com/jobs?q=software&fromage=last&start=' + str(i))
-
-    #url = ('https://in.indeed.com/jobs?q=machine+learning&l=india&start=' + str(i))
-
-    #url = ('https://in.indeed.com/jobs?q=analyst&l=india&start=' + str(i))
-    #url = ('https://in.indeed.com/jobs?q=IT&l=india&start=' + str(i))
-    #url = ('https://in.indeed.com/jobs?q=developer&l=india&start=' + str(i))
-    
+def load_indeed_jobs_div(url):    
     page = requests.get(url)
     soup = BeautifulSoup(page.content, "html.parser")
     return soup
@@ -126,8 +128,6 @@ def extract_job_information_indeed(soup):
 
         except:
             pass
-
-
 
 
     extracted_info.append(titles)                    

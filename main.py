@@ -1,125 +1,75 @@
-
 import pandas as pd
 import numpy as np
-from utils.clean_utils import PreprocessOld, PreprocessNew
-
-old_df = pd.read_csv('data/raw_data.csv')
-old_df = PreprocessOld()(old_df)
-
-
-new_df = pd.read_csv('data/final.csv')
-new_df = PreprocessNew()(new_df)
-
-
-final_df = pd.DataFrame()
-
-for col in old_df.columns:
-    temp_df = pd.concat([new_df[col], old_df[col]], axis=0)
-    final_df = pd.concat([final_df, temp_df], axis=1)
-
-
-from sklearn.utils import shuffle
-df = shuffle(final_df)
-df.reset_index(drop=True, inplace=True)
-
-
-
-
-#here we will apply glove embeddings on all text columns and concatenate them and them concatenate them along with numerical columns
-"""#Glove Embeddings"""
-
+from utils.temp_clean_utils import Preprocess
 from utils.nlp_utils import Word2VecVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.compose import ColumnTransformer
+from sklearn.model_selection import train_test_split
+from scipy.sparse import hstack
+from sklearn.metrics import mean_squared_error
+from xgboost import XGBRegressor
 from gensim.models import KeyedVectors
+from pickle import dump
 
-
-# load GloVe model
-filename = 'utils/glove_50d.gs'
-model = KeyedVectors.load(filename, mmap='r')
-
-def glove_embedded(X_train, _train, col, X_test=None, _test = None, test=False):
-    
-    if test:
-      vectorizer = Word2VecVectorizer(model)
-    
-      X_train_embed = vectorizer.fit_transform(X_train[col].apply(str))
-      X_test_embed = vectorizer.transform(X_test[col].apply(str))
-      
-      _train = np.concatenate((X_train_embed, _train), axis=1)
-      _test = np.concatenate((X_test_embed, _test), axis=1)
-      return _train, _test
-      
-    else:
-        vectorizer = Word2VecVectorizer(model)
-        X_embed = vectorizer.fit_transform(X_train[col].apply(str))
-        _train = np.concatenate((X_embed, _train), axis=1)
-     
-        return _train
-
-        
-
-temp_df = df[df['avg_yearly_sal']>0]
-temp_df.reset_index(drop=True, inplace=True)  
-
-
-def calculate(df, col, col_list):
-    train = df[~df[col].isnull()]
-    test = df[df[col].isnull()]
-    train_set = train.drop(col_list, axis=1)
-    y_train = train[col]
-    test_set = test.drop(col_list, axis=1)
-    _train = train_set.select_dtypes(exclude='object').values
-    _test = test_set.select_dtypes(exclude='object').values
-
-    for col in test_set.select_dtypes(include='object').columns:
-      _train, _test = glove_embedded(train_set, _train, col, test_set, _test, test=True)
-      
-    from xgboost import XGBRegressor
-    model = XGBRegressor(objective='reg:squarederror', random_state=42)
-    model.fit(_train, y_train)
-    missing_values = model.predict(_test)
-    
-    #add missing ratings to test dataset
-    test['rating'] = np.round(missing_values, 2)
-    
-    #combing train and test to form dataset
-    final_df = pd.concat([train, test], axis=0).sort_index()
-
-    return final_df
+#check
+df = pd.read_csv('data/data_train_preprocessed.csv')
+df['experience'].fillna('', inplace=True)
 
 
 """#Calculating missing ratings"""
 
-final_df = calculate(temp_df, 'rating', ['rating', 'avg_yearly_sal'])
+rating_df = df[df['avg_yearly_sal']>0]
+rating_df.reset_index(drop=True, inplace=True)
+
+#All rows with ratings present
+rating_train = rating_df[~rating_df['rating'].isnull()]
+
+#All rows with ratings absent
+rating_test = rating_df[rating_df['rating'].isnull()]
+
+train_set = rating_train.drop(['rating', 'avg_yearly_sal'], axis=1)
+y_train = rating_train['rating']
+test_set = rating_test.drop(['rating', 'avg_yearly_sal'], axis=1)
 
 
-"""#Calculating missing net experience"""
-
-temp = calculate(temp_df, 'avg_yearly_sal', ['rating', 'avg_yearly_sal'])
-final_df['net_experience'] = temp['net_experience']
 
 
 
-"""#Transformation"""
+"""#Glove Embeddings"""
+# load GloVe model
+filename = 'utils/vector.kv'
+model = KeyedVectors.load(filename)
 
-from scipy import stats
-import pylab
-import matplotlib.pyplot as plt
-#### Q-Q plot
-def plot_data(df):
-    plt.figure(figsize=(10,6))
-    plt.subplot(1,2,1)
-    df.hist(bins=20)
-    plt.subplot(1,2,2)
-    stats.probplot(df,dist='norm',plot=pylab)
-    plt.show()
+rating_train = train_set.select_dtypes(exclude='object').values
+rating_test = test_set.select_dtypes(exclude='object').values
 
-temp_df = final_df.copy()
+def glove_embedded(X_train, col, X_test, rating_train, rating_test):
 
-for col in temp_df.select_dtypes(exclude = 'object').columns:
-  print(col, '\n')
-  plot_data(final_df[col])
-  temp_df[col], _ = stats.boxcox(1+final_df[col])
-  plot_data(temp_df[col])
+  vectorizer = Word2VecVectorizer(model)
+
+  X_train_embed = vectorizer.fit_transform(X_train[col].apply(str))
+  X_test_embed = vectorizer.transform(X_test[col].apply(str))
+  
+  rating_train = np.concatenate((X_train_embed, rating_train), axis=1)
+  rating_test = np.concatenate((X_test_embed, rating_test), axis=1)
+  
+  return rating_train, rating_test
+
+
+for col in test_set.select_dtypes(include='object').columns:
+  rating_train, rating_test = glove_embedded(train_set, col, test_set, rating_train, rating_test)
+
+rating_model = XGBRegressor(random_state=42)
+rating_model.fit(rating_train, y_train)
+
+test_ratings = rating_model.predict(rating_test)
+
+#add missing ratings to test dataset
+rating_test['rating'] = np.round(test_ratings, 2)
+
+#combing train and test to form dataset
+final_df = pd.concat([rating_train, rating_test], axis=0)
+final_df.sort_index(inplace=True)
 
 
 
@@ -127,65 +77,65 @@ for col in temp_df.select_dtypes(exclude = 'object').columns:
 
 """#Create Dataset for Model building"""
 
-final_df = final_df[(~final_df['avg_yearly_sal'].isnull()) & (final_df['avg_yearly_sal'] > 0)]
-
-final_df['avg_yearly_sal'] = final_df['avg_yearly_sal'].apply(lambda x: np.log(x))
-
-plot_data(final_df['avg_yearly_sal'])
-
-from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(final_df.drop('avg_yearly_sal', axis=1), final_df['avg_yearly_sal'], test_size = 0.01,random_state=42)
+X_train.select_dtypes(include='object').columns
 
-X = final_df.drop('avg_yearly_sal', axis=1)
-y = final_df['avg_yearly_sal']
+transformer = ColumnTransformer([ 
+    ('vectorizer_job', TfidfVectorizer(), 'Job_position'), 
+    ('vectorizer_comp', TfidfVectorizer(), 'Company'), 
+    ('vectorizer_requirements', TfidfVectorizer(), 'requirements'),    
+    ('vectorizer_exp', TfidfVectorizer(), 'experience')], remainder='passthrough')
 
-X_train.reset_index(drop=True, inplace=True)
-X_test.reset_index(drop=True, inplace=True)
+train = transformer.fit_transform(X_train)
+test = transformer.transform(X_test)
 
+num_cols = list(X_train.select_dtypes(exclude='object').columns)
+num_cols
 
-#
-train_ans = X_train.select_dtypes(exclude='object').values
-test_ans = X_test.select_dtypes(exclude='object').values
+train_stack = hstack((X_train[num_cols].values, train))
+test_stack = hstack((X_test[num_cols].values, test))
 
-for col in X_test.select_dtypes(include='object').columns:
-  train_ans, test_ans = glove_embedded(X_train, train_ans, col, X_test, test_ans, test=True)
-
-
-
-
-"***To train on entire dataset***"
-train_ans = X.select_dtypes(exclude='object').values
-
-for col in X.select_dtypes(include='object').columns:
-  train_ans = glove_embedded(X, train_ans, col)
+xgb_reg = XGBRegressor(random_state=42)
+xgb_reg.fit(train_stack, y_train)
+pred = xgb_reg.predict(test_stack)
+print(np.sqrt(mean_squared_error(y_test, pred)))
 
 
 
 
 
+#train with complete dataset
+#data_train = final_df.drop('avg_yearly_sal', axis=1)
+#target = final_df['avg_yearly_sal']
 
-"""#Model """
+#transformer = ColumnTransformer([
+    #('vectorizer_job', TfidfVectorizer(), 'Job_position'),
+    #('vectorizer_comp', TfidfVectorizer(), 'Company'),
+    #('vectorizer_requirements', TfidfVectorizer(), 'requirements'),
+    #('vectorizer_exp', TfidfVectorizer(), 'experience')], remainder='passthrough')
 
-#from sklearn.model_selection import GridSearchCV
-from xgboost import XGBRegressor
-from sklearn.metrics import mean_squared_error
+#text_data_transformed = transformer.fit_transform(data_train)
 
-#XGBoost
-xgr = XGBRegressor(learning_rate = 0.1, max_depth = 5, random_state=42, objective = 'reg:squarederror', n_estimators = 800)
-xgr.fit(train_ans, y_train)
-pred = xgr.predict(test_ans)
+#num_cols = list(data_train.select_dtypes(exclude='object').columns)
+#num_cols
 
-np.sqrt(mean_squared_error(np.exp(y_test), np.exp(pred)))
+#train_stack = hstack((data_train[num_cols].values, text_data_transformed))
 
+#xgb_reg = XGBRegressor(random_state=42)
+#xgb_reg.fit(train_stack, target)
 
 
-#Train on entire dataset
-xgr = XGBRegressor(learning_rate = 0.1, max_depth = 5, random_state=42, objective = 'reg:squarederror', n_estimators = 800)
-xgr.fit(train_ans, y)
+# # save the model
+# dump(xgb_reg, open('model_building/model.pkl', 'wb'))
+# # save the scaler
+# dump(transformer, open('model_building/scaler.pkl', 'wb'))
 
-#import pickle 
-#filename = 'xgb_model.sav'
-#pickle.dump(xgr, open(filename, 'wb'))
+
+
+# # load the model
+# model = load(open('model.pkl', 'rb'))
+# # load the scaler
+# scaler = load(open('scaler.pkl', 'rb'))
 
 
 
