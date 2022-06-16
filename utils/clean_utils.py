@@ -204,7 +204,6 @@ class Preprocess:
 
     def final_operations(self, df):
 
-        # remove columns with constant values
         df['Company'] = df['Company'].apply(lambda x: self.preprocess_text(str(x)))
         df['Job_position'] = df['Job_position'].apply(lambda x: self.preprocess_text(str(x)))
         
