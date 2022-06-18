@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from utils.temp_clean_utils import Preprocess
+from utils.clean_utils import Preprocess
 from utils.nlp_utils import Word2VecVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.compose import ColumnTransformer

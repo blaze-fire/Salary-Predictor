@@ -16,14 +16,12 @@ class Preprocess:
 
     
     def preprocess_text(self, text):
-        #Function taken from (https://stackoverflow.com/a/71095469/14204371)
+        #fast processing of stopwords from (https://stackoverflow.com/a/71095469/14204371)
         
         text = text.lower()
         text = re.sub('[^a-zA-Z]', ' ', text)
-        
         stopwords_dict = {word: 1 for word in stopwords.words("english")}
         text = " ".join([word for word in text.split() if word not in stopwords_dict])
-           
         text = ' '.join([lemmatizer.lemmatize(w) for w in text.split()])
         return text
 
@@ -144,7 +142,7 @@ class Preprocess:
             if re.findall(r'senior', text.lower()):
                 return 2
         
-            if re.findall(r'junior', text.lower()):
+            elif re.findall(r'junior', text.lower()):
                 return 1
             
             else:
