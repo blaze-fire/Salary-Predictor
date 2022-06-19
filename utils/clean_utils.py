@@ -19,7 +19,7 @@ class Preprocess:
         #fast processing of stopwords from (https://stackoverflow.com/a/71095469/14204371)
         
         text = text.lower()
-        text = re.sub('[^a-zA-Z]', ' ', text)
+        text = re.sub('[^a-zA-Z\d+^\w\s]', ' ', text)
         stopwords_dict = {word: 1 for word in stopwords.words("english")}
         text = " ".join([word for word in text.split() if word not in stopwords_dict])
         text = ' '.join([lemmatizer.lemmatize(w) for w in text.split()])
