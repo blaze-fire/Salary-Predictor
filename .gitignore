@@ -3,3 +3,4 @@ FlaskAPI/utils/__pycache__
 .spyproject
 data/.directory
 utils/__pycache__
+mlruns/
