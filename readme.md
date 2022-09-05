@@ -87,11 +87,7 @@ Looks like most of the missing job_titles for above companies are probably senio
 
 First started with basic regression models like <b>Lasso</b>  as the data has outliers and lasso is robust to outliers.
 
-Also some really powerful models like <b>Random forest</b>, <b>ExtraTrees</b>, <b>Gradient boosted trees</b> and <b>Xgboost</b> models were used  as the complexity of problem is high but the available data is small. (784 training and 100 test examples) <br>
-
-Also created a blender of best models, to squeeze a bit more performance from the models
-
-*For stacking RandomForest, XGBRegressor, ExtraTrees, GradientBoosting, VotingRegressor were used as they performed the best*
+Also some really powerful models like <b>Random forest</b> and <b>Xgboost</b> models were used  as the complexity of problem is high but the available data is small. (784 training and 100 test examples) <br>
 
 ## Results
 
@@ -113,15 +109,10 @@ Lets now look at the performance of various models (Complexity increases down th
 |	2	| DecisionTree 				| 	284506.715        		|
 |	2	| SVR 					| 	683731.055        		|
 |	3	| RandomForest				|   	218930.329   	 		|
-|	4	| GradientBoosting 			| 	469119.429     			|
-|	5	| ExtraTrees   				| 	318502.193        		|
 |	6	| XGBRegressor				|	247804.983     			|
-|	7	| VotingRegressor   			|   	290880.830   			|
-|	8	| Stacking Ensemble 			|   	241739.189   			|
 
 
 **Note:**	*The MSE of all models are on test set.*  <br>
-
 
 Also, here our tuned **RandomForest** performs slightly better than our ensemble:
 
