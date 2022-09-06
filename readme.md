@@ -114,7 +114,7 @@ Lets now look at the performance of various models (Complexity increases down th
 
 **Note:**	*The MSE of all models are on test set.*  <br>
 
-Also, here our tuned **RandomForest** performs slightly better than our ensemble:
+Here, our tuned **RandomForest** performs the best among given models:
 
 The 95% confidence interval : [113283.578, 288145.465] <br><br>
 **R2** score : 0.75
