@@ -107,9 +107,9 @@ Lets now look at the performance of various models (Complexity increases down th
 | ----		|   :-----------: 			| 		----------- 		|
 |	1	| Lasso       		    		|   	667868.128   			|
 |	2	| DecisionTree 				| 	284506.715        		|
-|	2	| SVR 					| 	683731.055        		|
-|	3	| RandomForest				|   	218930.329   	 		|
-|	6	| XGBRegressor				|	247804.983     			|
+|	3	| SVR 					| 	683731.055        		|
+|	4	| RandomForest				|   	218930.329   	 		|
+|	5	| XGBRegressor				|	247804.983     			|
 
 
 **Note:**	*The MSE of all models are on test set.*  <br>
