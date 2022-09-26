@@ -10,9 +10,9 @@ As an engineering student currently in my 2nd year, I would be sitting for my in
 [App hosted on Heroku](https://salary-prediction-app-flask.herokuapp.com/)
 
 ## Table of contents
-* [Data Scraping](https://github.com/blaze-fire/Salary-Predictor/blob/main/scraping%20and%20cleaning%20data/indeed_jobs_scraper.py)
-* [Data Cleaning](https://github.com/blaze-fire/Salary-Predictor/blob/main/scraping%20and%20cleaning%20data/data_cleaning.py)
-* [Feature Engineering](https://github.com/blaze-fire/Salary-Predictor/blob/main/feature_engineering/feature_engineering.py)
+* [Data Scraping](https://github.com/blaze-fire/Salary-Predictor/blob/main/scraping_script/indeed_jobs_scraper.py)
+* Data Cleaning
+* Feature Engineering
 * [Observations](#observations)
 * [Model Building](#model-building)
 * [Results](#results)
@@ -87,11 +87,7 @@ Looks like most of the missing job_titles for above companies are probably senio
 
 First started with basic regression models like <b>Lasso</b>  as the data has outliers and lasso is robust to outliers.
 
-Also some really powerful models like <b>Random forest</b>, <b>ExtraTrees</b>, <b>Gradient boosted trees</b> and <b>Xgboost</b> models were used  as the complexity of problem is high but the available data is small. (784 training and 100 test examples) <br>
-
-Also created a blender of best models, to squeeze a bit more performance from the models
-
-*For stacking RandomForest, XGBRegressor, ExtraTrees, GradientBoosting, VotingRegressor were used as they performed the best*
+Also some really powerful models like <b>Random forest</b> and <b>Xgboost</b> models were used  as the complexity of problem is high but the available data is small. (784 training and 100 test examples) <br>
 
 ## Results
 
@@ -111,24 +107,14 @@ Lets now look at the performance of various models (Complexity increases down th
 | ----		|   :-----------: 			| 		----------- 		|
 |	1	| Lasso       		    		|   	667868.128   			|
 |	2	| DecisionTree 				| 	284506.715        		|
-|	2	| SVR 					| 	683731.055        		|
-|	3	| RandomForest				|   	218930.329   	 		|
-|	4	| GradientBoosting 			| 	469119.429     			|
-|	5	| ExtraTrees   				| 	318502.193        		|
-|	6	| XGBRegressor				|	247804.983     			|
-|	7	| VotingRegressor   			|   	290880.830   			|
-|	8	| Stacking Ensemble 			|   	241739.189   			|
+|	3	| SVR 					| 	683731.055        		|
+|	4	| RandomForest				|   	218930.329   	 		|
+|	5	| XGBRegressor				|	247804.983     			|
 
 
 **Note:**	*The MSE of all models are on test set.*  <br>
 
-For **Stacking Ensemble** :<br>
-
-The 95% confidence interval for our predictions : [130003.6634 , 302895.4814]
-
-The **R2** score from Stacking Ensemble model predictions is **0.7342**, the model explains about 3/4 th of the observed variation, which is great. The model can give much better predictions if fed with more data.
-
-Also, here our tuned **RandomForest** performs slightly better than our ensemble:
+Here, our tuned **RandomForest** performs the best among given models:
 
 The 95% confidence interval : [113283.578, 288145.465] <br><br>
 **R2** score : 0.75
